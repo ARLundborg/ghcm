@@ -1,0 +1,31 @@
+#' Sugar process data
+#'
+#' A dataset containing ash content, color and emission spectra for various
+#'  excitation wavelengths of sugar produced in a sugar plant in Scandinavia.
+#'
+#' @format A data frame with 268 rows of 9 variables:
+#' \describe{
+#'   \item{ash}{Numeric vector of ash content of the sugar in percent}
+#'   \item{color}{Numeric vector of color in a unit derived from from
+#'    absorption. 45 is the maximum allowed color for standard sugar.}
+#'   \item{excitation_230}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 230nm light.}
+#'   \item{excitation_240}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 240nm light.}
+#'   \item{excitation_255}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 255nm light.}
+#'   \item{excitation_290}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 290nm light.}
+#'   \item{excitation_305}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 305nm light.}
+#'   \item{excitation_325}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 325nm light.}
+#'   \item{excitation_340}{268 x 571 matrix, emissions at wavelengths between
+#'    270 and 560nm when the sugar is excited with 340nm light.}
+#' }
+#' @source \url{http://www.models.life.ku.dk/sugar_process}
+#'
+#' @references R. Bro, Exploratory study of sugar production using fluorescence
+#'  spectroscopy and multi-way analysis, Chemom. Intell. Lab. Syst., 1999,
+#'   (46), 133-147.
+"sugar_process"
