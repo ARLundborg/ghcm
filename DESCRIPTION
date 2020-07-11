@@ -29,3 +29,5 @@ Suggests:
     rmarkdown,
     GeneralisedCovarianceMeasure
 VignetteBuilder: knitr
+URL: http://github.com/arlundborg/ghcm
+BugReports: http://github.com/arlundborg/ghcm/issues
