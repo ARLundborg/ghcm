@@ -27,7 +27,7 @@ ghcm_class_constructor <- function(test_statistic, p, dim, cov, samples,
     )
 }
 
-# Add description and examples below.
+# Add description, references and examples below.
 
 ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
                X_grid=NULL,
@@ -56,7 +56,23 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   #' @param alpha Numeric in the unit interval. Significance level of the test.
   #' @param ... Additional arguments to be passed to the fpca_method.
   #'
-  #' @examples
+  #' @return An object of class \code{ghcm} containing:
+  #'   \describe{
+  #'     \item{\code{test_statistic}}{Numeric, test statistic of the test.}
+  #'     \item{\code{p}}{Numeric in the unit interval, estimated p-value of
+  #'      the test.}
+  #'     \item{\code{dim}}{Positive integer, the dimension of the truncated
+  #'      limiting Gaussian.}
+  #'     \item{\code{cov}}{\code{dim} x \code{dim} matrix, estimated covariance
+  #'      of the truncated limiting Gaussian.}
+  #'     \item{\code{samples}}{Numeric vector, samples of the Hilbert-Schmidt
+  #'      norm of the estimated truncated limiting Gaussian.}
+  #'     \item{\code{alpha}}{Numeric in the unit interval, significance level
+  #'      of the test.}
+  #'   }
+  #'
+  #' @references
+  #'  ADD OUR REFERENCE!
   #'
   #'
   #' @export
@@ -70,7 +86,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   }
 
   if (is.null(X_grid)) {
-    X_grid <- seq(0, 1, length.out=dim(resid_X_on_Z)[2])
+    X_grid <- seq(0, 1, length.out = dim(resid_X_on_Z)[2])
     X_manually_set <- FALSE
   }
   else {
@@ -78,7 +94,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   }
 
   if (is.null(Y_grid)) {
-    Y_grid <- seq(0, 1, length.out=dim(resid_Y_on_Z)[2])
+    Y_grid <- seq(0, 1, length.out = dim(resid_Y_on_Z)[2])
     Y_manually_set <- FALSE
   }
   else {
@@ -95,7 +111,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
                     "' in the refund package."))
       })
     fpca_method <- function(x, grid, ...) {
-      refund_fpca_function(x, argvals=grid, ...)$scores
+      refund_fpca_function(x, argvals = grid, ...)$scores
       }
   }
   else if (is.function(fpca_method)) {
