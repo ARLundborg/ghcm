@@ -4,3 +4,6 @@
 ^Meta$
 ^data-raw$
 ^\.travis\.yml$
+^README\.Rmd$
+^inst/extdata$
+^inst/python$

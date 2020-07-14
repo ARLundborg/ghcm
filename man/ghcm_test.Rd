@@ -8,27 +8,39 @@
 ghcm_test(
   resid_X_on_Z,
   resid_Y_on_Z,
+  X_is_multivariate = NULL,
+  Y_is_multivariate = NULL,
+  fpca_method = "fpca.sc",
   b = 10000,
-  X_is_multivariate = FALSE,
-  Y_is_multivariate = FALSE,
-  fpca_method = NULL,
   alpha = 0.05,
   ...
 )
 }
 \arguments{
-\item{resid_X_on_Z, resid_Y_on_Z}{This is a description. Bladebla}
+\item{resid_X_on_Z, resid_Y_on_Z}{Numeric vectors or matrices. Residuals
+when regressing X (Y) on Z with a suitable regression method.}
 
-\item{b}{This is a description}
+\item{X_is_multivariate, Y_is_multivariate}{Logcal scalars. If TRUE, treats
+X (Y) as a multivariate random variable and not a functional random
+ variable observed on a grid. Thus no FPCA expansion is performed on
+ X (Y) if this is TRUE.}
 
-\item{X_is_multivariate, Y_is_multivariate}{This is a description. Bladebla}
+\item{fpca_method}{String or function. If a string is given, will search
+the refund package for a function with the given name. If a function is
+given it must return a matrix with the same number of rows as the input
+and the coordinates of the input in its FPCA basis as each row.}
 
-\item{fpca_method}{This is a description. Bladebla}
+\item{b}{Positive integer. The number of samples from the estimated
+limiting distribution to estimate the p-value.}
 
-\item{alpha}{This is a description}
+\item{alpha}{Numeric in the unit interval. Significance level of the test.}
 
 \item{...}{Additional arguments to be passed to the fpca_method.}
 }
 \description{
 Desc
+}
+\examples{
+
+
 }

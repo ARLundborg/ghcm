@@ -20,7 +20,8 @@ Imports:
   graphics,
   MASS,
   refund,
-  stats
+  stats,
+  utils
 Depends: R (>= 4.0.0)
 RoxygenNote: 7.1.0
 Suggests: 

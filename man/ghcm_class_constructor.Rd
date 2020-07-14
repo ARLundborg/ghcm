@@ -4,24 +4,26 @@
 \alias{ghcm_class_constructor}
 \title{Class constructor for the \code{ghcm} class.}
 \usage{
-ghcm_class_constructor(
-  test_statistic,
-  p,
-  limiting_covariance,
-  asymptotic_distribution,
-  alpha
-)
+ghcm_class_constructor(test_statistic, p, dim, cov, samples, alpha)
 }
 \arguments{
-\item{test_statistic}{Desc}
+\item{test_statistic}{Positive numeric. The value of the GHCM test
+statistic.}
 
-\item{p}{Desc}
+\item{p}{Numeric in the unit interval. The estimated p-value of the
+statistic.}
 
-\item{limiting_covariance}{Desc}
+\item{dim}{Positive integer. The dimension of the truncated Gaussian limit
+distribution.}
 
-\item{asymptotic_distribution}{Desc}
+\item{cov}{\code{dim} x \code{dim} covariance matrix. The covariance of the
+truncated Gaussian limit distribution.}
 
-\item{alpha}{Desc}
+\item{samples}{Numeric vector. Samples from the estimated limiting
+distribution.}
+
+\item{alpha}{Numeric in the unit interval. The significance level of the
+test.}
 }
 \description{
 Class constructor for the \code{ghcm} class.

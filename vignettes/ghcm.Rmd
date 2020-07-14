@@ -23,7 +23,10 @@ library(ghcm)
 # Introduction
 
 
-We will consider a 
+Note that ALL of the following relies on the precision of the regression methods used. We will not justify the use of the regression methods here but in all applications you should ensure that the regression methods work well.
+
+
+Describe data.
 
 ```{r}
 data("sugar_process")
@@ -74,7 +77,7 @@ m_color_full <- pfr(color ~ lf(excitation_230, argvals=emission_wavelengths) +
                     lf(excitation_340, argvals=emission_wavelengths),
              data=sugar_process)
 
-tmp <- ghcm_test(resid(m_ash_full), resid(m_color_full), X_is_multivariate = TRUE, Y_is_multivariate = TRUE)
+ghcm_test(resid(m_ash_full), resid(m_color_full))
 ```
 
 
@@ -83,6 +86,9 @@ Test color independent from ash given excitation (do a single and all)
 # Real X, Function Y, Z
 
 Test ash independent from excitation x given (single and rest)
+
+# Multivariate X, Function Y, Z
+
 
 # Functional X, Y, Z
 

@@ -2,11 +2,11 @@ import scipy.io
 import pandas as pd
 import numpy as np
 
-mat = scipy.io.loadmat("original.mat")
+mat = scipy.io.loadmat("../extdata/original.mat")
 
 y_df = pd.DataFrame(mat["y"], columns=["date", "color", "ash"]).drop(axis=1, labels="date")
 
-y_df.to_csv("ash_color.txt", header=True, index=False)
+y_df.to_csv("../../data-raw/ash_color.txt", header=True, index=False)
 
 emission_spectra = [mat["X"][:, i:(i+571)] for i in range(7)]
 emission_wavelengths = np.linspace(275, 560, 571)
