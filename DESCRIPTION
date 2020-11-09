@@ -28,7 +28,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    GeneralisedCovarianceMeasure
+    GeneralisedCovarianceMeasure,
     rticles
 URL: http://github.com/arlundborg/ghcm
 BugReports: http://github.com/arlundborg/ghcm/issues
