@@ -1,19 +1,19 @@
 Package: ghcm
 Type: Package
-Title: Test for Conditional Independence Based on the Generalized Hilbertian
-        Covariance Measure (GHCM)
+Title: Functional Conditional Independence Testing with the Generalised
+      Hilbertian Covariance Measure (GHCM)
 Version: 0.0.0.9000
 Authors@R: c(person("Anton Rask", "Lundborg", email = "a.lundborg@statslab.cam.ac.uk",
   role = c("aut", "cre")),
   person("Rajen D.", "Shah", role = c("aut")),
   person("Jonas", "Peters", role = c("aut")))
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: OLD!: A statistical hypothesis test for conditional independence.
-    It performs nonlinear regressions on the conditioning variable and then tests
-    for a vanishing covariance between the resulting residuals. It can be applied
-    to both univariate random variables and multivariate random vectors. Details
-    of the method can be found in Rajen D. Shah and Jonas Peters (2018) <arXiv:1804.07203>.
-License: GPL-2
+Description: A statistical hypothesis test for conditional independence.
+    Given residuals from a sufficiently powerful regression, it tests whether 
+    the covariance of the residuals is vanishing. It can be applied to both
+    discretely-observed functional data and multivariate data. 
+    Details of the method can be found in Anton Rask Lundborg, Rajen D. Shah and Jonas
+    Peters (2020) <arXiv:????>.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
@@ -23,12 +23,12 @@ Imports:
   stats,
   utils
 Depends: R (>= 4.0.0)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     knitr,
     rmarkdown,
     GeneralisedCovarianceMeasure
-VignetteBuilder: knitr
 URL: http://github.com/arlundborg/ghcm
 BugReports: http://github.com/arlundborg/ghcm/issues
+VignetteBuilder: knitr

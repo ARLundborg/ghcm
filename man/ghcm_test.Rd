@@ -58,7 +58,6 @@ An object of class \code{ghcm} containing:
 \description{
 Desc
 }
-\examples{
-
-
+\references{
+ADD OUR REFERENCE!
 }

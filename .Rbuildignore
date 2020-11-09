@@ -7,3 +7,10 @@
 ^README\.Rmd$
 ^inst/extdata$
 ^inst/python$
+^LICENSE\.md$
+^cran-comments\.md$
+^pkgdown$
+^_pkgdown\.yml$
+^\.github$
+^vignettes/jss.bst
+^vignettes/jss.cls

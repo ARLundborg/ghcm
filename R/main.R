@@ -168,22 +168,18 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   cov_est <- stats::cov(outer_products)
   limit_dim <- dim_X * dim_Y
   samples <- rowSums(MASS::mvrnorm(b, rep(0, limit_dim), cov_est)^2)
-  p <- mean(samples > test_statistic)
+  p <- (1+sum(samples > test_statistic))/(1+b)
 
   ghcm_class_constructor(test_statistic, p, limit_dim, cov_est, samples, alpha)
 }
 
 plot.ghcm <- function(x, ...) {
   #' @export
-  if (x$p < x$alpha) {
-    xlim <- c(0, x$estimate * 1.25)
-  }
-  else {
-    xlim <- c(0, max(x$samples))
-  }
-  graphics::hist(x$samples, prob = TRUE, xlim = xlim,
+  density_estimate <- stats::density(x$samples, from=0, bw="SJ")
+  graphics::plot(density_estimate,
                  xlab = "Test statistic",
-                 main = "Histogram of asymptotic test distribution", ...)
+                 main = "Density estimate of asymptotic test distribution", ...)
+  graphics::rug(x$samples)
   graphics::abline(v = x$test_statistic, col = 2, lty = 2, lwd = 2)
 }
 
@@ -191,6 +187,13 @@ print.ghcm <- function(x, digits=getOption("digits"), ...) {
   #' @export
   cat("H0: X _||_ Y | Z, p:", format(x$p, digits = digits))
   cat("\n")
+  if(x$reject){
+    cat("Rejected at",format(x$alpha*100, digits = digits),"% level")
+    cat("\n")
+  } else {
+    cat("Not rejected at",format(x$alpha*100, digits = digits),"% level")
+    cat("\n")
+  }
   cat("Estimate:", format(x$test_statistic, digits = digits))
   cat("\n")
   invisible(x)
