@@ -29,6 +29,7 @@ Suggests:
     knitr,
     rmarkdown,
     GeneralisedCovarianceMeasure
+    rticles
 URL: http://github.com/arlundborg/ghcm
 BugReports: http://github.com/arlundborg/ghcm/issues
 VignetteBuilder: knitr
