@@ -11,12 +11,13 @@ The goal of ghcm is to …
 
 ## Installation
 
-You can install the released version of ghcm from
-[CRAN](https://CRAN.R-project.org) with:
+<!-- relevant once accepted on CRAN
+You can install the released version of ghcm from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("ghcm")
 ```
+ -->
 
 And the development version from [GitHub](https://github.com/) with:
 
@@ -25,19 +26,21 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("ARLundborg/ghcm")
 ```
 
+<!--
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
 
-``` r
+
+```r
 library(ghcm)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-``` r
+
+```r
 summary(cars)
 #>      speed           dist       
 #>  Min.   : 4.0   Min.   :  2.00  
@@ -48,12 +51,11 @@ summary(cars)
 #>  Max.   :25.0   Max.   :120.00
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
 
 You can also embed plots, for example:
 
 <img src="man/figures/README-pressure-1.png" width="100%" />
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
+In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+-->

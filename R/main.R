@@ -173,9 +173,13 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   ghcm_class_constructor(test_statistic, p, limit_dim, cov_est, samples, alpha)
 }
 
-plot.ghcm <- function(x, ...) {
+plot.ghcm <- function(x, bw="SJ", ...) {
+  #'
+  #' Document this.
   #' @export
-  density_estimate <- stats::density(x$samples, from=0, bw="SJ")
+  #'
+
+  density_estimate <- stats::density(x$samples, from=0, bw=bw)
   graphics::plot(density_estimate,
                  xlab = "Test statistic",
                  main = "Density estimate of asymptotic test distribution", ...)

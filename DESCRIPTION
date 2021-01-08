@@ -28,8 +28,8 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    GeneralisedCovarianceMeasure,
-    rticles
+    bookdown,
+    GeneralisedCovarianceMeasure
 URL: http://github.com/arlundborg/ghcm
 BugReports: http://github.com/arlundborg/ghcm/issues
 VignetteBuilder: knitr
