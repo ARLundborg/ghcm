@@ -27,17 +27,17 @@ ghcm_class_constructor <- function(test_statistic, p, dim, cov, samples,
     )
 }
 
-# Add description, references and examples below.
-
 ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
                X_grid=NULL,
                Y_grid=NULL,
                fpca_method="fpca.sc", b=10000, alpha=0.05, ...) {
-  #' Perform the GHCM using the residuals from regressing X on Z (resid_f)
-  #'  and regressing Y on Z (resid_g).
+  #' Conditional Independence Test using the GHCM
   #'
   #'
-  #' Desc
+  #' Test for conditional independence using the Generalised Hilbertian
+  #'  Covariance Measure. The function is applied to residuals from regressing X on Z
+  #'  and regressing Y on Z and its validity is contingent on the performance
+  #'  of the regression methods.
   #'
   #' @param resid_X_on_Z,resid_Y_on_Z Numeric vectors or matrices. Residuals
   #'  when regressing X (Y) on Z with a suitable regression method.
@@ -72,9 +72,37 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   #'   }
   #'
   #' @references
-  #'  ADD OUR REFERENCE!
+  #'  ADD OUR REFERENCE!!!!
   #'
+  #' @examples
+  #' library(refund)
+  #' set.seed(1)
+  #' data(sugar_process)
+  #' emission_wavelengths <- seq(275, 560, by=0.5)
   #'
+  #' # Test independence of two scalars given a functional variable
+  #'
+  #' m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
+  #' m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
+  #' ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+  #'
+  #' # Test independence of a functional variable and a scalar variable given a
+  #' # functional variable
+  #' \dontrun{
+  #' m_excitation_240 <- pffr(excitation_240 ~
+  #'   ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
+  #'   data=sugar_process, chunk.size=31000)
+  #' ghcm_test(resid(m_excitation_240), resid(m_ash),
+  #' X_grid = emission_wavelengths, Y_grid = NA )
+  #'}
+  #' # Test independence of two functional variables given a functional variable
+  #' \dontrun{
+  #' m_excitation_255 <- pffr(excitation_255 ~
+  #'   ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
+  #'   data=sugar_process, chunk.size=31000)
+  #' ghcm_test(resid(m_excitation_240), resid(m_excitation_255),
+  #' X_grid = emission_wavelengths, Y_grid = emission_wavelengths)
+  #'}
   #' @export
 
 
@@ -174,15 +202,48 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
 }
 
 plot.ghcm <- function(x, bw="SJ", ...) {
+  #' Plotting function for the \code{ghcm}-class.
   #'
-  #' Document this.
+  #' Plots the observed test statistic of a performed GHCM test together with a
+  #' density estimate of the estimated asymptotic distribution of the test
+  #' statistic under the null.
+  #'
+  #' @param x \code{ghcm}-object. The result of running a \code{ghcm_test}.
+  #' @param bw a string or numeric. If \code{bw} is a string, it should specify
+  #' a bandwidth method for the \code{density} function in the \pkg{stats}
+  #' package. If \code{bw} is a numeric, it will be used as the bandwidth in
+  #' the call to \code{density}.
+  #' @param ... additional plotting parameters.
+  #'
+  #' @return
+  #' None.
+  #'
+  #' @examples
+  #' set.seed(1)
+  #' library(refund)
+  #' data(sugar_process)
+  #'
+  #' # Test independence of two scalars given a functional variable
+  #'
+  #' m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
+  #' m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
+  #' test <- ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+  #' plot(test)
+  #'
   #' @export
   #'
 
   density_estimate <- stats::density(x$samples, from=0, bw=bw)
-  graphics::plot(density_estimate,
-                 xlab = "Test statistic",
-                 main = "Density estimate of asymptotic test distribution", ...)
+  if(max(x$samples) >= x$test_statistic) {
+    graphics::plot(density_estimate,
+                   xlab = "Test statistic",
+                   main = "Density estimate of asymptotic test distribution", ...)
+  }
+  else {
+    graphics::plot(density_estimate,
+                   xlab = "Test statistic",
+                   main = "Density estimate of asymptotic test distribution", xlim=c(0, x$test_statistic))
+  }
   graphics::rug(x$samples)
   graphics::abline(v = x$test_statistic, col = 2, lty = 2, lwd = 2)
 }

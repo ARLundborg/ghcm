@@ -2,10 +2,38 @@
 % Please edit documentation in R/main.R
 \name{plot.ghcm}
 \alias{plot.ghcm}
-\title{Document this.}
+\title{Plotting function for the \code{ghcm}-class.}
 \usage{
 \method{plot}{ghcm}(x, bw = "SJ", ...)
 }
+\arguments{
+\item{x}{\code{ghcm}-object. The result of running a \code{ghcm_test}.}
+
+\item{bw}{a string or numeric. If \code{bw} is a string, it should specify
+a bandwidth method for the \code{density} function in the \pkg{stats}
+package. If \code{bw} is a numeric, it will be used as the bandwidth in
+the call to \code{density}.}
+
+\item{...}{additional plotting parameters.}
+}
+\value{
+None.
+}
 \description{
-Document this.
+Plots the observed test statistic of a performed GHCM test together with a
+density estimate of the estimated asymptotic distribution of the test
+statistic under the null.
+}
+\examples{
+set.seed(1)
+library(refund)
+data(sugar_process)
+
+# Test independence of two scalars given a functional variable
+
+m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
+m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
+test <- ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+plot(test)
+
 }

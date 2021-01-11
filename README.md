@@ -7,7 +7,10 @@
 
 <!-- badges: end -->
 
-The goal of ghcm is to …
+ghcm is a package to perform conditional independence tests on
+functional data.
+
+For usage examples, see the package vignette.
 
 ## Installation
 
@@ -19,7 +22,8 @@ install.packages("ghcm")
 ```
  -->
 
-And the development version from [GitHub](https://github.com/) with:
+The development version can be installed from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

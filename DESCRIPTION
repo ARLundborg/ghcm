@@ -29,7 +29,9 @@ Suggests:
     knitr,
     rmarkdown,
     bookdown,
-    GeneralisedCovarianceMeasure
+    GeneralisedCovarianceMeasure,
+    ggplot2,
+    reshape2
 URL: http://github.com/arlundborg/ghcm
 BugReports: http://github.com/arlundborg/ghcm/issues
 VignetteBuilder: knitr

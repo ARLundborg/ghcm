@@ -22,9 +22,11 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  fig.align="center",
+  dpi=200,
   fig.width=7,
   fig.height=5,
-  fig.align="center"
+  out.width="100%"
 )
 options(rmarkdown.html_vignette.check_title = FALSE) 
 ```
@@ -61,13 +63,12 @@ $$
 p = \frac{1+\sum_{b=1}^B \ind_{\{ W_b > T \} } }{B+1}.
 $$
 
-Assuming that the regression methods perform sufficiently well, the GHCM has uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero even when $X \notindependent Y \cond Z$.
+Assuming that the regression methods perform sufficiently well, the GHCM has uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero in this case.
 
-In practice, we do not observe the functional data fully but rather at a discrete set of values. To deal with this, we utilise functional principal components analysis (FPCA) to ...
+In practice, we do not observe the functional data fully but rather at a discrete set of values. To deal with this, we utilise functional principal components analysis (FPCA) to express $\hat{\varepsilon}$ and $\hat{\xi}$ (in the case that these are functional) as vectors.
 
 
 # An application
-
 To give concrete examples of the usage of the package, we perform conditional independence tests on a dataset consisting of analyses of the quality of sugar production from a sugar plant in Scandinavia. The plant was continuously sampled in 8 hour shifts across three months to produce 268 samples. The sugar was dissolved in water and emission intensities between 275 and 560nm were measured at 0.5nm steps when the sugar was excited at seven different wavelengths (230, 240, 255, 290, 305, 325 and 340nm). Ash content of the sugar was measured by conductivity (as a percentage) and the color of the sugar was determined on a scale where 45 is the maximum allowed value for standard sugar. For additional details, see [@Bro1999].
 
 The ash content and color of the sugar are markers of the quality of the sugar and we will try to elucidate the relationship between the quality of the sugar and the emission spectra at the various excitation wavelengths. We can load the data by calling `data(sugar_process)`. We also set the seed to ensure reproducibility of the tests we perform in the whats follows and define a vector `emission_wavelengths` containing the emission wavelengths.
@@ -79,6 +80,7 @@ emission_wavelengths <- seq(275, 560, by=0.5)
 colnames(sugar_process)
 ```
 `sugar_process` consists of 268 color and ash measurements and 7 $268 \times 571$ matrices containing the emission intensities at the 7 different excitation wavelengths. The curves and the mean curve for the 230 and 305nm excitation wavelengths can be seen in Figures \@ref(fig:wavelengths230) and \@ref(fig:wavelengths305).
+
 ```{r wavelengths230, fig.cap="Plot of emission spectra from the sugar process data at excitation wavelengths 230nm.", echo=FALSE}
 matplot(emission_wavelengths, t(sugar_process$excitation_230), type="l",
         col=rgb(0,0,0,0.1) , lty=1, xlab="Emission wavelength",
@@ -100,10 +102,10 @@ title("305nm excitation")
 In all of the upcoming examples we will use functions from the `refund` R-package [@refund] to perform regressions. We will not attempt to justify the validity of the regression models we use here as the upcoming tests are only included for illustrative purposes. In actual applications of the GHCM however, it is critical that the regression methods employed estimate the conditional expectations $\mathbb{E}(X \cond Z)$ and $\mathbb{E}(Y \cond Z)$ sufficiently well for the $p$-values to be valid. Any use of the GHCM should be prefaced by an analysis of the performance of the regression methods in use.
 
 ## Testing independence of ash content and color given emission spectra
-Using the `ghcm` package, we will first test whether the ash content and the color of the sugar is independent given the all 7 emission spectra. Intuitively, this would represent the hypothesis that the color contains no information about the ash content, given the emission spectra (or vice versa). If the null is true and we are interested in the ash content, we can omit the color measurements from our modelling of the ash content and perhaps save time or resources by not measuring the color of the sugar.
+Using the `ghcm` package, we will first test whether the ash content and the color of the sugar is independent given all 7 emission spectra. Intuitively, this would represent the hypothesis that the color contains no information about the ash content, given the emission spectra (or vice versa). If the null is true and we are interested in the ash content, we can omit the color measurements from our modelling of the ash content and perhaps save time or resources by not measuring the color of the sugar.
 
-To perform the conditional independence test, we need a scalar-on-function regression method and we will use the `pfr` function from the `refund` package [@refund] with `lf`-terms.
-```{r ash-sugar-test}
+To perform the conditional independence test, we need a scalar-on-function regression method and we will use the `pfr` function from the `refund` package [@refund] with `lf`-terms. We run the test in the following code:
+```{r ash-color-test}
 library(refund)
 m_ash <- pfr(ash ~ lf(excitation_230) + lf(excitation_240) +
                lf(excitation_255) + lf(excitation_290) +
@@ -116,42 +118,77 @@ m_color <- pfr(color ~ lf(excitation_230) + lf(excitation_240) +
 test <- ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
 print(test)
 ```
-Since neither the ash content of the color are functional random variables, we set `X_grid` and `Y_grid` to be `NA`. This tells the `ghcm_test` function to treat the variables as real-valued observations rather than functional observations. We get a $p$-value of 0.0386 and an estimate of the test statistic of 10.7443. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone. However, we can get an idea of how extreme the test statistic is by plotting the asymptotic distribution and the test statistic together. This can be done by simply calling `plot` on the `ghcm` object, in this case `plot(test)`, which results in the plot seen in Figure \@ref(fig:ash-sugar-test-plot).
-```{r ash-sugar-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
+Since neither the ash content or the color are functional random variables, we set `X_grid` and `Y_grid` to be `NA`. This tells the `ghcm_test` function to treat the variables as real-valued observations rather than functional observations. We get a $p$-value of 0.099 and an estimate of the test statistic of 10.7443. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone. However, we can get an idea of how extreme the test statistic is by plotting the asymptotic distribution and the test statistic together. This can be done by simply calling `plot` on the `ghcm` object, in this case `plot(test)`, which results in the plot seen in Figure \@ref(fig:ash-color-test-plot).
+
+```{r ash-color-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
 plot(test)
 ```
+
 ## Determining which emission spectra are relevant in predicting ash content
-In this section, we will attempt to determine which of the emission spectra are relevant when predicting the ash content.
+We can plot the emission spectra at different excitation wavelengths and color the curves based on the ash content as seen in Figures \@ref(fig:230-ash-emission-plot) and \@ref(fig:240-ash-emission-plot) below.
 
-This is a problem of variable selection which is, in general, tricky to resolve without...
+```{r 230-ash-emission-plot, echo=FALSE, fig.cap="Plot of emission spectra when excited with 230nm light and colored based on the ash content of the sugar."}
+library(ggplot2)
+library(reshape2)
 
-We are less ambitious in this section and seek instead to determine whether any of the emission spectra at a specific excitation wavelength contain information that is not contained in any of the remaining emission spectra about the ash content of the sugar. In other words, we seek to test whether, letting $Y$ denote the ash content, $X_i$ the emission spectra at the $i$'th excitation wavelength and $X_{-i}$ denote all the emission spectra except the spectrum excited at the $i$'th wavelength, $Y \independent X_i \ | \ X_{-i}$ for $i=1, \dots, 7$. 
+excitation_230_df <- as.data.frame(sugar_process$excitation_230)
+colnames(excitation_230_df) <- substr(colnames(excitation_230_df), 1, 5) 
+excitation_230_df$ash <- sugar_process$ash
+excitation_230_df$id <- 1:nrow(sugar_process)
+tmp <- melt(excitation_230_df, id.var=c("id", "ash"), variable.name="emission_wavelength")
+tmp$emission_wavelength <- as.numeric(levels(tmp$emission_wavelength))[tmp$emission_wavelength]
 
-To be able to use the GHCM here, in addition to the scalar-on-function regression employed in the previous section, we will need to be able to perform function-on-function regressions. This is done using the \code{pffr}-function in the \pkg{refund}-package with \code{ff} terms. \Anton{Cite package, method etc.}
 
-```{r, eval=FALSE}
-excitation_wavelength_names <- colnames(sugar_process)[3:9]
-tests <- list()
-for (i in 1:length(excitation_wavelength_names)) {
-  ash_formula <- paste("ash", "~",
-                  paste(sapply(excitation_wavelength_names[-i],
-                  function(x) {
-                    paste0("lf(", x, ")")
-                  }), collapse = " + "))
-  excitation_formula <- paste(excitation_wavelength_names[i], "~",
-                          paste(sapply(excitation_wavelength_names[-i],
-                          function(x) {
-                            paste0("ffpc(", x, 
-                                   ", decomppars=list(pve=0.99,useSymm=FALSE))")
-                          }), collapse = " + "))
-  
-  m_excitation <- pffr(as.formula(excitation_formula), data=sugar_process, chunk.size=31000)
-  m_ash <- pfr(as.formula(ash_formula), data=sugar_process)
-  
-  tests[[i]] <- ghcm_test(resid(m_excitation), resid(m_ash),
-                          X_grid=emission_wavelengths, Y_grid=NA)
-}
-names(tests) <- excitation_wavelength_names
+ggplot(tmp, aes(x=emission_wavelength, y=value, group=id)) + geom_line(aes(color=ash)) +
+  theme_bw() + scale_color_gradient(low="grey", high="black", limits=c(0, max(sugar_process$ash))) +
+  scale_x_continuous(name="Emission wavelength") + scale_y_continuous(name="Emission intensity")
 ```
 
-## Testing spectra (find better title)
+```{r 240-ash-emission-plot, echo=FALSE, fig.cap="Plot of emission spectra when excited with 240nm light and colored based on the ash content of the sugar."}
+excitation_240_df <- as.data.frame(sugar_process$excitation_240)
+colnames(excitation_240_df) <- substr(colnames(excitation_240_df), 1, 5) 
+excitation_240_df$ash <- sugar_process$ash
+excitation_240_df$id <- 1:nrow(sugar_process)
+tmp <- melt(excitation_240_df, id.var=c("id", "ash"), variable.name="emission_wavelength")
+tmp$emission_wavelength <- as.numeric(levels(tmp$emission_wavelength))[tmp$emission_wavelength]
+
+
+ggplot(tmp, aes(x=emission_wavelength, y=value, group=id)) + geom_line(aes(color=ash)) +
+  theme_bw() + scale_color_gradient(low="grey", high="black", limits=c(0, max(sugar_process$ash))) +
+  scale_x_continuous(name="Emission wavelength") + scale_y_continuous(name="Emission intensity")
+```
+
+It appears that there is a correlation between ash content and the shape of the emission spectra at both excitation wavelengths. Letting $Y$ denote the ash content of a sample and $X_i$ for $i \in \{230, 240 \}$ the emission spectrum when excited with $i$ nm light, a relevant question is whether we would like to include both $X_{230}$ and $X_{240}$ in a model predicting $Y$. We can resolve this by testing whether $Y \independent X_{240} \cond X_{230}$ with the GHCM.
+
+To use the GHCM here, in addition to the scalar-on-function regression employed in the previous section, we will need to be able to perform function-on-function regressions. This is done using the `pffr` function in the `refund` package [@refund] with `ffpc` terms. We run the test in the following code:
+```{r ash-spectra-test}
+m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
+m_excitation_240 <- pffr(excitation_240 ~ ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
+                data=sugar_process, chunk.size=31000)
+test <- ghcm_test(resid(m_excitation_240), resid(m_ash), X_grid = emission_wavelengths, Y_grid = NA )
+print(test)
+```
+The ash content is scalar, hence we set `Y_grid = NA`, however, since `excitation_240` is functional and observed on the grid `emission_wavelengths`, we set `X_grid = emission_wavelengths`. This tells the `ghcm_test` function to treat the first set of variables as functional observations (and hence perform FPCA on these) and the second set of variables as scalars. We get a $p$-value of 0.101 and an estimate of the test statistic of 90503.34. As before, we call `plot(test)` to plot the estimated null distribtuion of the test statistic which can be seen in Figure \@ref(fig:ash-spectra-test-plot).
+
+```{r ash-spectra-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
+plot(test)
+```
+
+## Investigating relationships between different spectra
+Let $X_i$ for $i \in \{230, 240, 255 \}$ denote the emission spectrum of the sugar when excited with $i$ nm light. It might of interest to determine whether the relationship between $X_{230}$ and $X_{255}$ is solely affected by the relationship between $X_{230}$ and $X_{240}$, and $X_{255}$ and $X_{240}$. We can test this hypothesis by testing the hypothesis $X_{230} \independent X_{255} \cond X_{240}$ with the GHCM. We perform function-on-function regressions as in the previous section. We run the test in the following code:
+```{r spectra-test}
+m_excitation_230 <- pffr(excitation_255 ~ ffpc(excitation_240, decomppars = list(pve=0.99, useSymm=FALSE)),
+                data=sugar_process, chunk.size=31000)
+m_excitation_255 <- pffr(excitation_255 ~ ffpc(excitation_240, decomppars = list(pve=0.99, useSymm=FALSE)),
+                data=sugar_process, chunk.size=31000)
+test <- ghcm_test(resid(m_excitation_230), resid(m_excitation_255), X_grid = emission_wavelengths, Y_grid = emission_wavelengths )
+print(test)
+```
+Both variables are functional, hence we set both `X_grid` and `Y_grid` to be `emission_wavelengths`. We get a very large value of the test statistic and a $p$-value that is basically $0$. To get an idea of how extreme the observed value of the test statistic is, we plot the asymptotic distribution as before, which can be seen in Figure \@ref(fig:spectra-test-plot). We note that, contingent on the regression methods being appropriate, this is strong evidence that the null is false.
+
+```{r spectra-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
+plot(test)
+```
+
+
+# Bibliography
