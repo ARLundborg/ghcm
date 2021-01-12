@@ -1,31 +1,22 @@
-#' Sugar process data
+#' GHCM simulated data
 #'
-#' A dataset containing ash content, color and emission spectra for various
-#'  excitation wavelengths of sugar produced in a sugar plant in Scandinavia.
+#' A simulated dataset containing a combination of functional and scalar
+#'  variables. The functional variables each consists of 101 observations on
+#'  an equidistant grid on [0, 1].
 #'
-#' @format A data frame with 268 rows of 9 variables:
+#' Y_1 and Y_2 are scalar random variables and are both functions of Z. X, Z and
+#'  W are functional, Z is a function of X and W is a function of Z.
+#'
+#'
+#' @format A data frame with 500 rows of 5 variables:
 #' \describe{
-#'   \item{ash}{Numeric vector of ash content of the sugar in percent}
-#'   \item{color}{Numeric vector of color in a unit derived from from
-#'    absorption. 45 is the maximum allowed color for standard sugar.}
-#'   \item{excitation_230}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 230nm light.}
-#'   \item{excitation_240}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 240nm light.}
-#'   \item{excitation_255}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 255nm light.}
-#'   \item{excitation_290}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 290nm light.}
-#'   \item{excitation_305}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 305nm light.}
-#'   \item{excitation_325}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 325nm light.}
-#'   \item{excitation_340}{268 x 571 matrix, emission intensity at wavelengths
-#'    between 270 and 560nm when the sugar is excited with 340nm light.}
+#'   \item{X}{500 x 101 matrix.}
+#'   \item{Z}{500 x 101 matrix.}
+#'   \item{W}{500 x 101 matrix. }
+#'   \item{Y_1}{Numeric vector.}
+#'   \item{Y_2}{Numeric vector.}
 #' }
-#' @source \url{http://www.models.life.ku.dk/sugar_process}
+#' @source The generation script can be found in the \code{data-raw} folder of
+#' the package.
 #'
-#' @references R. Bro, Exploratory study of sugar production using fluorescence
-#'  spectroscopy and multi-way analysis, Chemom. Intell. Lab. Syst., 1999,
-#'   (46), 133-147.
-"sugar_process"
+"ghcm_sim_data"

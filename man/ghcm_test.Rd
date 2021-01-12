@@ -20,8 +20,9 @@ ghcm_test(
 when regressing X (Y) on Z with a suitable regression method.}
 
 \item{X_grid, Y_grid}{Numeric vectors or NA. The grid of values that X (Y)
-is observed on. Defaults to an equidistant grid on the unit interval.
-If NA, X (Y) is assumed to not be a functional random variable.}
+is observed on. When set to NULL (the default) an equidistant grid on the
+unit interval is created. If NA, X (Y) is assumed to not be a functional
+random variable.}
 
 \item{fpca_method}{String or function. If a string is given, will search
 the refund package for a function with the given name. If a function is
@@ -31,8 +32,8 @@ in its FPCA basis as each row. Extra arguments to the fpca function
 are supplied with \code{...}. Currently supported refund fpca functions
 are \code{fpca.sc} (the default), \code{fpca.ssvd} and \code{fpca.face}.}
 
-\item{b}{Positive integer. The number of samples from the estimated
-limiting distribution to estimate the p-value.}
+\item{b}{Positive integer. The number of Monte Carlo realisations from the
+estimated limiting distribution to estimate the p-value.}
 
 \item{alpha}{Numeric in the unit interval. Significance level of the test.}
 
@@ -63,31 +64,25 @@ Test for conditional independence using the Generalised Hilbertian
 \examples{
 library(refund)
 set.seed(1)
-data(sugar_process)
-emission_wavelengths <- seq(275, 560, by=0.5)
+data(ghcm_sim_data)
+grid <- seq(0, 1, length.out = 101)
 
 # Test independence of two scalars given a functional variable
 
-m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
-m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
-ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
+m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
+ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
 
 # Test independence of a functional variable and a scalar variable given a
 # functional variable
 \dontrun{
-m_excitation_240 <- pffr(excitation_240 ~
-  ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
-  data=sugar_process, chunk.size=31000)
-ghcm_test(resid(m_excitation_240), resid(m_ash),
-X_grid = emission_wavelengths, Y_grid = NA )
+m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
+ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
 }
 # Test independence of two functional variables given a functional variable
 \dontrun{
-m_excitation_255 <- pffr(excitation_255 ~
-  ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
-  data=sugar_process, chunk.size=31000)
-ghcm_test(resid(m_excitation_240), resid(m_excitation_255),
-X_grid = emission_wavelengths, Y_grid = emission_wavelengths)
+m_W <- pffr(W ~ ff(Z), data=sugar_process, chunk.size=31000)
+ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid)
 }
 }
 \references{

@@ -78,31 +78,25 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   #' @examples
   #' library(refund)
   #' set.seed(1)
-  #' data(sugar_process)
-  #' emission_wavelengths <- seq(275, 560, by=0.5)
+  #' data(ghcm_sim_data)
+  #' grid <- seq(0, 1, length.out = 101)
   #'
   #' # Test independence of two scalars given a functional variable
   #'
-  #' m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
-  #' m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
-  #' ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+  #' m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
+  #' m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
+  #' ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
   #'
   #' # Test independence of a functional variable and a scalar variable given a
   #' # functional variable
   #' \dontrun{
-  #' m_excitation_240 <- pffr(excitation_240 ~
-  #'   ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
-  #'   data=sugar_process, chunk.size=31000)
-  #' ghcm_test(resid(m_excitation_240), resid(m_ash),
-  #' X_grid = emission_wavelengths, Y_grid = NA )
+  #' m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
+  #' ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
   #'}
   #' # Test independence of two functional variables given a functional variable
   #' \dontrun{
-  #' m_excitation_255 <- pffr(excitation_255 ~
-  #'   ffpc(excitation_230, decomppars = list(pve=0.99, useSymm=FALSE)),
-  #'   data=sugar_process, chunk.size=31000)
-  #' ghcm_test(resid(m_excitation_240), resid(m_excitation_255),
-  #' X_grid = emission_wavelengths, Y_grid = emission_wavelengths)
+  #' m_W <- pffr(W ~ ff(Z), data=sugar_process, chunk.size=31000)
+  #' ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid)
   #'}
   #' @export
 
@@ -222,13 +216,13 @@ plot.ghcm <- function(x, bw="SJ", ...) {
   #' @examples
   #' set.seed(1)
   #' library(refund)
-  #' data(sugar_process)
+  #' data(ghcm_sim_data)
   #'
   #' # Test independence of two scalars given a functional variable
   #'
-  #' m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
-  #' m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
-  #' test <- ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+  #' m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
+  #' m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
+  #' test <- ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
   #' plot(test)
   #'
   #' @export

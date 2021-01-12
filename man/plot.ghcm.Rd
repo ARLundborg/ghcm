@@ -27,13 +27,13 @@ statistic under the null.
 \examples{
 set.seed(1)
 library(refund)
-data(sugar_process)
+data(ghcm_sim_data)
 
 # Test independence of two scalars given a functional variable
 
-m_ash <- pfr(ash ~ lf(excitation_230), data=sugar_process)
-m_color <- pfr(color ~ lf(excitation_230), data=sugar_process)
-test <- ghcm_test(resid(m_ash), resid(m_color), X_grid = NA, Y_grid = NA )
+m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
+m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
+test <- ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
 plot(test)
 
 }
