@@ -56,7 +56,7 @@ An object of class \code{ghcm} containing:
   }
 }
 \description{
-Test for conditional independence using the Generalised Hilbertian
+Testing X independent of Y given Z using the Generalised Hilbertian
  Covariance Measure. The function is applied to residuals from regressing X on Z
  and regressing Y on Z and its validity is contingent on the performance
  of the regression methods.
