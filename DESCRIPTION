@@ -2,7 +2,7 @@ Package: ghcm
 Type: Package
 Title: Functional Conditional Independence Testing with the Generalised
       Hilbertian Covariance Measure (GHCM)
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: c(person("Anton Rask", "Lundborg", email = "a.lundborg@statslab.cam.ac.uk",
   role = c("aut", "cre")),
   person("Rajen D.", "Shah", role = c("aut")),
@@ -32,6 +32,6 @@ Suggests:
     GeneralisedCovarianceMeasure,
     ggplot2,
     reshape2
-URL: http://github.com/arlundborg/ghcm
-BugReports: http://github.com/arlundborg/ghcm/issues
+URL: https://github.com/arlundborg/ghcm
+BugReports: https://github.com/arlundborg/ghcm/issues
 VignetteBuilder: knitr

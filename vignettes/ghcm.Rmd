@@ -171,7 +171,7 @@ m_X <- pffr(X ~ ff(Z), data = ghcm_sim_data, chunk.size = 31000)
 test <- ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
 print(test)
 ```
-The `Y_1` variable is scalar, hence we set `Y_grid = NA`, however, since `X_1` is functional and observed on the grid `grid`, we set `X_grid = grid`. This tells the `ghcm_test` function to treat the first set of variables as functional observations (and hence perform FPCA on these) and the second set of variables as scalars. We get a $p$-value of 0.88 and an estimate of the test statistic of 9.25e-04. As before, we call `plot(test)` to plot the estimated null distribtuion of the test statistic which can be seen in Figure \@ref(fig:Y-X-Z-test-plot).
+The `Y_1` variable is scalar, hence we set `Y_grid = NA`, however, since `X_1` is functional and observed on the grid `grid`, we set `X_grid = grid`. This tells the `ghcm_test` function to treat the first set of variables as functional observations (and hence perform FPCA on these) and the second set of variables as scalars. We get a $p$-value of 0.88 and an estimate of the test statistic of 9.25e-04. As before, we call `plot(test)` to plot the estimated null distribution of the test statistic which can be seen in Figure \@ref(fig:Y-X-Z-test-plot).
 
 ```{r Y-X-Z-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
 plot(test)
