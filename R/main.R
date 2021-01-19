@@ -73,7 +73,9 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   #'   }
   #'
   #' @references
-  #'  ADD OUR REFERENCE!!!!
+  #'  Please cite the following paper: Anton Rask Lundborg, Rajen D. Shah and
+  #'  Jonas Peters: "Conditional Independence Testing in Hilbert Spaces with
+  #'  Applications to Functional Data Analysis" https://arxiv.org/abs/2101.07108
   #'
   #' @examples
   #' library(refund)

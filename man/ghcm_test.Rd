@@ -86,5 +86,7 @@ ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid)
 }
 }
 \references{
-ADD OUR REFERENCE!!!!
+Please cite the following paper: Anton Rask Lundborg, Rajen D. Shah and
+ Jonas Peters: "Conditional Independence Testing in Hilbert Spaces with
+ Applications to Functional Data Analysis" https://arxiv.org/abs/2101.07108
 }
