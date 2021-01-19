@@ -1,3 +1,10 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Fixed a bad url in the vignette
+
+
 ## Test environments
 * local OS X install, R 4.0.3
 * ubuntu xenial (on travis-ci), R 4.0.2
