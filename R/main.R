@@ -14,8 +14,11 @@ ghcm_class_constructor <- function(test_statistic, p, dim, cov, samples,
   #'  distribution.
   #' @param alpha Numeric in the unit interval. The significance level of the
   #'  test.
+  #' @keywords internal
+  #' @return An object of class \code{ghcm} with the properties listed above.
   #'
-  #' @export
+  #' @noRd
+  #'
   structure(class = "ghcm", list(
     test_statistic = test_statistic,
     p = p,
@@ -91,13 +94,13 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   #'
   #' # Test independence of a functional variable and a scalar variable given a
   #' # functional variable
-  #' \dontrun{
+  #' \donttest{
   #' m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
   #' ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
   #'}
   #' # Test independence of two functional variables given a functional variable
-  #' \dontrun{
-  #' m_W <- pffr(W ~ ff(Z), data=sugar_process, chunk.size=31000)
+  #' \donttest{
+  #' m_W <- pffr(W ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
   #' ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid)
   #'}
   #' @export

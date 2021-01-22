@@ -2,5 +2,4 @@
 
 S3method(plot,ghcm)
 S3method(print,ghcm)
-export(ghcm_class_constructor)
 export(ghcm_test)
