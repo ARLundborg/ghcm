@@ -2,7 +2,9 @@
 
 This is a resubmission. In this version I have:
 
-* Fixed a bad url in the vignette
+* Reduced length of title to less than 65 characters
+* Removed documentation and export for internal function ghcm_class_constructor
+* Modified examples of ghcm_test to use \donttest instead of \dontrun
 
 
 ## Test environments

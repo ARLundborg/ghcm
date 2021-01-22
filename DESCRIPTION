@@ -1,7 +1,6 @@
 Package: ghcm
 Type: Package
-Title: Functional Conditional Independence Testing with the Generalised
-      Hilbertian Covariance Measure (GHCM)
+Title: Functional Conditional Independence Testing with the GHCM
 Version: 1.0.0
 Authors@R: c(person("Anton Rask", "Lundborg", email = "a.lundborg@statslab.cam.ac.uk",
   role = c("aut", "cre")),
