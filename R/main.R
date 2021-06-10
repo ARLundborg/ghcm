@@ -110,7 +110,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   resid_Y_on_Z <- as.matrix(resid_Y_on_Z)
 
   if (dim(resid_X_on_Z)[1] != dim(resid_Y_on_Z)[1]) {
-    stop("Error: The sample sizes of the X residuals and Y residuals differ.")
+    stop("The sample sizes of the X residuals and Y residuals differ.")
   }
 
   if (is.null(X_grid)) {
@@ -135,7 +135,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
       expr = refund_fpca_function <- utils::getFromNamespace(fpca_method,
                                                              "refund"),
       error = function(e) {
-        stop(paste0("Error: Could not find '", fpca_method,
+        stop(paste0("Could not find '", fpca_method,
                     "' in the refund package."))
       })
     fpca_method <- function(x, grid, ...) {
@@ -146,7 +146,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
     fpca_method <- fpca_method
   }
   else {
-    stop("Error: fpca_method should be a function or a character string.")
+    stop("fpca_method should be a function or a character string.")
   }
 
   X_not_functional <- all(is.na(X_grid))
@@ -156,7 +156,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   }
   else {
     if (!X_manually_set) {
-      warning("Warning: X is assumed to have been observed on an equidistant
+      warning("X is assumed to have been observed on an equidistant
       grid. If this is not the case or if you want to suppress the warning set
               X_grid.")
     }
@@ -170,7 +170,7 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z,
   }
   else {
     if (!Y_manually_set) {
-      warning("Warning: Y is assumed to have been observed on an equidistant
+      warning("Y is assumed to have been observed on an equidistant
       grid. If this is not the case or if you want to suppress the warning set
               Y_grid.")
     }
