@@ -20,19 +20,17 @@ test_that("ghcm_runs_with_two_scalar_inputs", {
 })
 
 test_that("ghcm_runs_with_multivariate_and_scalar_inputs", {
-  tst <- ghcm_test(resid_X_on_Z_multivariate, resid_Y_on_Z_scalar, X_grid = NA)
+  tst <- ghcm_test(resid_X_on_Z_multivariate, resid_Y_on_Z_scalar)
   expect_is(tst, "ghcm")
 })
 
 test_that("ghcm_runs_with_functional_and_scalar_inputs", {
-  tst <- ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_scalar,
-                   X_grid = grid_X)
+  tst <- ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_scalar)
   expect_is(tst, "ghcm")
 })
 
 test_that("ghcm_runs_with_two_functional_inputs", {
-  tst <- ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_functional,
-                   X_grid = grid_X, Y_grid = grid_Y)
+  tst <- ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_functional)
   expect_is(tst, "ghcm")
 })
 
@@ -40,33 +38,6 @@ test_that("ghcm_fails_when_sample_sizes_differ", {
   resid_X_on_Z_functional_half <- resid_X_on_Z_functional[1:(N/2), ]
 
   expect_error({
-    ghcm_test(resid_X_on_Z_functional_half, resid_Y_on_Z_functional,
-              X_grid = grid_X, Y_grid = grid_Y)
+    ghcm_test(resid_X_on_Z_functional_half, resid_Y_on_Z_functional)
   })
-})
-
-test_that("ghcm_fails_when_giving_bad_fpca_string", {
-  expect_error({
-    ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_functional,
-              X_grid = grid_X, Y_grid = grid_Y,
-              fpca_method = "not_an_fpca_method")
-  })
-})
-
-test_that("ghcm_warns_about_X_non_equidistant_grid", {
-  expect_warning({
-    ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_scalar)
-  }, "equidistant")
-  tst <- ghcm_test(resid_X_on_Z_functional, resid_Y_on_Z_scalar,
-                   X_grid = grid_X)
-  expect_is(tst, "ghcm")
-})
-
-test_that("ghcm_warns_about_Y_non_equidistant_grid", {
-  expect_warning({
-    ghcm_test(resid_X_on_Z_scalar, resid_Y_on_Z_functional)
-  }, "equidistant")
-  tst <- ghcm_test(resid_X_on_Z_scalar, resid_Y_on_Z_functional,
-                   Y_grid = grid_Y)
-  expect_is(tst, "ghcm")
 })

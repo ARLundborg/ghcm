@@ -1,5 +1,6 @@
 
 #TODO: Fix vignette explanation of discretisation
+#TODO: Double check equi-distant? (if not, fix tests to use equidistant)
 
 ghcm_class_constructor <- function(test_statistic, p, cov,
                                    alpha) {
@@ -70,18 +71,18 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
   #'
   #' m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
   #' m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
-  #' ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
+  #' ghcm_test(resid(m_1), resid(m_2))
   #'
   #' # Test independence of a functional variable and a scalar variable given a
   #' # functional variable
   #' \donttest{
   #' m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
+  #' ghcm_test(resid(m_X), resid(m_1))
   #'}
   #' # Test independence of two functional variables given a functional variable
   #' \donttest{
   #' m_W <- pffr(W ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid)
+  #' ghcm_test(resid(m_X), resid(m_W))
   #'}
   #' @export
 
