@@ -58,14 +58,19 @@ $$
 \hat{\mathscr{C}} = \frac{1}{n-1} \sum_{i=1}^n (\mathscr{R}_i - \bar{\mathscr{R}}) \otimes_{HS} (\mathscr{R}_i - \bar{\mathscr{R}}),
 $$
 where $\bar{\mathscr{R}} = n^{-1} \sum_{i=1}^n \mathscr{R}_i$.
-4. Sample independent $W_1, \dots, W_B \sim \| \mathcal{N}(0, \hat{\mathscr{C}}) \|_{HS}$ and produce a $p$-value by setting
+4. Compute the eigenvalues of $\hat{\mathscr{C}}$ $(\lambda_i)_{i=1}^\infty$ and produce a $p$-value by setting
 $$
-p = \frac{1+\sum_{b=1}^B \ind_{\{ W_b > T \} } }{B+1}.
+p = \mathbb{P}(Q > T),
 $$
+where
+$$
+Q = \sum_{i=1}^n \lambda_i W_i^2
+$$
+for an i.i.d. sequence of standard Gaussian random variables $(W_i)_{i=1}^\infty$.
 
 Assuming that the regression methods perform sufficiently well, the GHCM has uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero in this case.
 
-In practice, we do not observe the functional data fully but rather at a discrete set of values. To deal with this, we utilise functional principal components analysis (FPCA) to express $\hat{\varepsilon}$ and $\hat{\xi}$ (in the case that these are functional) as vectors.
+In practice, we do not observe the functional data fully but rather at a discrete set of values. To deal with this, ...<!--  we utilise functional principal components analysis (FPCA) to express $\hat{\varepsilon}$ and $\hat{\xi}$ (in the case that these are functional) as vectors. -->
 
 
 # Example applications on a simulated dataset
@@ -119,14 +124,10 @@ To perform the conditional independence test, we need a scalar-on-function regre
 library(refund)
 m_1 <- pfr(Y_1 ~ lf(X) + lf(Z) + lf(W) , data=ghcm_sim_data)
 m_2 <- pfr(Y_2 ~ lf(X) + lf(Z) + lf(W), data=ghcm_sim_data)
-test <- ghcm_test(resid(m_1), resid(m_2), X_grid = NA, Y_grid = NA )
+test <- ghcm_test(resid(m_1), resid(m_2))
 print(test)
 ```
-Since both $Y_1$ and $Y_2$ are scalar, we set `X_grid` and `Y_grid` to be `NA`. This tells the `ghcm_test` function to treat the variables as real-valued observations rather than functional observations. We get a $p$-value of 0.96 and an estimate of the test statistic of 3.03e-06. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone. However, we can get an idea of how extreme the test statistic is by plotting the asymptotic distribution and the test statistic together. This can be done by simply calling `plot` on the `ghcm` object, in this case `plot(test)`, which results in the plot seen in Figure \@ref(fig:scalar-given-functional-test-plot).
-
-```{r scalar-given-functional-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
-plot(test)
-```
+We get a $p$-value of 0.958. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone, hence the test_statistic is not reported. 
 
 ## Testing independence of a scalar and functional variable given a functional variable
 We now test whether $Y_1 \independent X \cond Z$. This is relevant if we're interested in modelling $Y_1$ and want to determine whether $X$ should be included in a model that already includes $Z$. We can plot $X$ and $Z$ and color the curves based on the value of $Y_1$ as can be seen in Figures \@ref(fig:Z-Y-plot) and \@ref(fig:X-Y-plot) below. 
@@ -168,28 +169,19 @@ It appears that both of the functional variables contain information about $Y_1$
 ```{r Y-X-Z-test}
 m_1 <- pfr(Y_1 ~ lf(Z), data = ghcm_sim_data)
 m_X <- pffr(X ~ ff(Z), data = ghcm_sim_data, chunk.size = 31000)
-test <- ghcm_test(resid(m_X), resid(m_1), X_grid = grid, Y_grid = NA )
+test <- ghcm_test(resid(m_X), resid(m_1))
 print(test)
 ```
-The `Y_1` variable is scalar, hence we set `Y_grid = NA`, however, since `X_1` is functional and observed on the grid `grid`, we set `X_grid = grid`. This tells the `ghcm_test` function to treat the first set of variables as functional observations (and hence perform FPCA on these) and the second set of variables as scalars. We get a $p$-value of 0.88 and an estimate of the test statistic of 9.25e-04. As before, we call `plot(test)` to plot the estimated null distribution of the test statistic which can be seen in Figure \@ref(fig:Y-X-Z-test-plot).
-
-```{r Y-X-Z-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
-plot(test)
-```
+We get a $p$-value of 0.865.
 
 ## Testing independence of functional variables given a functional variable
 Finally, we test whether $X \independent W \cond Z$, which could be relevant in creating prediction models for $X$ or $W$ or in simply ascertaining the relationships between the functional variables. We run the test in the following code:
 ```{r X-W-Z-test}
 m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
 m_W <- pffr(W ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
-test <- ghcm_test(resid(m_X), resid(m_W), X_grid = grid, Y_grid = grid )
+test <- ghcm_test(resid(m_X), resid(m_W))
 print(test)
 ```
-Both variables are functional, hence we set both `X_grid` and `Y_grid` to be `grid`. We get a $p$-value of $0.638$ and an estimate of the test statistic of 6.76e-04. To get an idea of how extreme the observed value of the test statistic is, we plot the asymptotic distribution as before, which can be seen in Figure \@ref(fig:X-W-Z-test-plot). 
-
-```{r X-W-Z-test-plot, echo=FALSE, fig.cap="Plot of the estimated asymptotic test distribution under the null with the red line indicating the observed value."}
-plot(test)
-```
-
+We get a $p$-value of $0.6304$.
 
 # Bibliography
