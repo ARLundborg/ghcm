@@ -46,12 +46,8 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
   #'     \item{\code{test_statistic}}{Numeric, test statistic of the test.}
   #'     \item{\code{p}}{Numeric in the unit interval, estimated p-value of
   #'      the test.}
-  #'     \item{\code{dim}}{Positive integer, the dimension of the truncated
-  #'      limiting Gaussian.}
-  #'     \item{\code{cov}}{\code{dim} x \code{dim} matrix, estimated covariance
+  #'     \item{\code{cov}}{matrix, estimated covariance
   #'      of the truncated limiting Gaussian.}
-  #'     \item{\code{samples}}{Numeric vector, samples of the Hilbert-Schmidt
-  #'      norm of the estimated truncated limiting Gaussian.}
   #'     \item{\code{alpha}}{Numeric in the unit interval, significance level
   #'      of the test.}
   #'   }
