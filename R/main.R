@@ -259,7 +259,5 @@ print.ghcm <- function(x, digits=getOption("digits"), ...) {
     cat("Not rejected at",format(x$alpha*100, digits = digits),"% level")
     cat("\n")
   }
-  cat("Test statistic:", format(x$test_statistic, digits = digits))
-  cat("\n")
   invisible(x)
 }
