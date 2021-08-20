@@ -115,8 +115,8 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
 
   eig_vals <- pmax(eigen(cov_mat, only.values = TRUE, symmetric=TRUE)$values[-n], 0)
 
-  p <- CompQuadForm::imhof(test_statistic, eig_vals, epsrel = 10^(-10),
-                           epsabs = 10^(-10))$Qq
+  p <- CompQuadForm::imhof(test_statistic, eig_vals, epsrel = .Machine$double.eps,
+                           epsabs = .Machine$double.eps)$Qq
   ghcm_class_constructor(test_statistic, p, cov_mat, alpha)
 }
 
