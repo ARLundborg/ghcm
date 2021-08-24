@@ -86,6 +86,9 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
   resid_X_on_Z <- as.matrix(resid_X_on_Z)
   resid_Y_on_Z <- as.matrix(resid_Y_on_Z)
 
+  resid_X_on_Z <- sweep(resid_X_on_Z, 2, colMeans(resid_X_on_Z))
+  resid_Y_on_Z <- sweep(resid_Y_on_Z, 2, colMeans(resid_Y_on_Z))
+
   if (dim(resid_X_on_Z)[1] != dim(resid_Y_on_Z)[1]) {
     stop("The sample sizes of the X residuals and Y residuals differ.")
   }
@@ -115,8 +118,10 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
 
   eig_vals <- pmax(eigen(cov_mat, only.values = TRUE, symmetric=TRUE)$values[-n], 0)
 
-  p <- CompQuadForm::imhof(test_statistic, eig_vals, epsrel = .Machine$double.eps,
-                           epsabs = .Machine$double.eps)$Qq
+  p <- tryCatch(
+    CompQuadForm::imhof(test_statistic, eig_vals, epsrel = .Machine$double.eps,
+                           epsabs = .Machine$double.eps)$Qq,
+    warning=function(w) return(0))
   ghcm_class_constructor(test_statistic, p, cov_mat, alpha)
 }
 
