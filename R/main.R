@@ -94,22 +94,10 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
   }
 
   n <- dim(resid_X_on_Z)[1]
-  dim_X <- dim(resid_X_on_Z)[2]
-  dim_Y <- dim(resid_Y_on_Z)[2]
-
-  outer_products <- t(apply(cbind(resid_X_on_Z, resid_Y_on_Z), 1,
-                            function(x) {
-                              x[1:dim_X] %o% x[(dim_X + 1):(dim_X + dim_Y)]
-                            }
-  ))
-
-  if (dim(outer_products)[1] == 1) {
-    outer_products <- t(outer_products)
-  }
-
-  test_statistic <- sum((sqrt(n) * colMeans(outer_products))^2)
 
   uncentered_cov_mat <- 1/n*tcrossprod(resid_X_on_Z)*tcrossprod(resid_Y_on_Z)
+
+  test_statistic <- sum(uncentered_cov_mat)
 
   uncentered_cov_mat_colmeans <- colMeans(uncentered_cov_mat)
   cov_mat <- uncentered_cov_mat - uncentered_cov_mat_colmeans -
