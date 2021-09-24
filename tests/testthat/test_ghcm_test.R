@@ -5,7 +5,7 @@ set.seed(13720)
 
 N <- 200
 grid_X <- seq(0, 1, length.out = 50)
-grid_Y <- c(seq(0, 0.5, length.out = 45), 0.6, 0.7, 0.8, 0.9, 1)
+grid_Y <- c(seq(0, 2, length.out = 25))
 resid_X_on_Z_scalar <- rnorm(N)
 resid_X_on_Z_multivariate <- matrix(rnorm(2 * N), ncol = 2)
 resid_X_on_Z_functional <- matrix(rnorm(length(grid_X) * N),

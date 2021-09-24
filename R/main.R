@@ -1,7 +1,3 @@
-
-#TODO: Fix vignette explanation of discretisation
-#TODO: Double check equi-distant? (if not, fix tests to use equidistant)
-
 ghcm_class_constructor <- function(test_statistic, p, cov,
                                    alpha) {
   #' Class constructor for the \code{ghcm} class.
@@ -95,14 +91,13 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
 
   n <- dim(resid_X_on_Z)[1]
 
-  uncentered_cov_mat <- 1/n*tcrossprod(resid_X_on_Z)*tcrossprod(resid_Y_on_Z)
+  inner_product_mat <- tcrossprod(resid_X_on_Z)*tcrossprod(resid_Y_on_Z)
 
-  test_statistic <- sum(uncentered_cov_mat)
+  test_statistic <- 1/n*sum(inner_product_mat)
 
-  uncentered_cov_mat_colmeans <- colMeans(uncentered_cov_mat)
-  cov_mat <- uncentered_cov_mat - uncentered_cov_mat_colmeans -
-    matrix(uncentered_cov_mat_colmeans, nrow=n, ncol=n, byrow=TRUE) +
-    mean(uncentered_cov_mat)
+  scaling_mat <- matrix(1/n, n, n)
+
+  cov_mat <- 1/(n-1)*(inner_product_mat - scaling_mat %*% inner_product_mat - inner_product_mat %*% scaling_mat + scaling_mat %*% inner_product_mat %*% scaling_mat)
 
   eig_vals <- pmax(eigen(cov_mat, only.values = TRUE, symmetric=TRUE)$values[-n], 0)
 
