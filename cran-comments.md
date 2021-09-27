@@ -1,11 +1,6 @@
-## Resubmission
+## Submission
 
-This is a resubmission. In this version I have:
-
-* Reduced length of title to less than 65 characters
-* Removed documentation and export for internal function ghcm_class_constructor
-* Modified examples of ghcm_test to use \donttest instead of \dontrun
-
+This is a package update.
 
 ## Test environments
 * local OS X install, R 4.0.3
@@ -16,4 +11,4 @@ This is a resubmission. In this version I have:
 There were no ERRORs, WARNINGs or NOTEs.
 
 ## Downstream dependencies
-There are currently no downstream dependencies for this package”
+There are currently no downstream dependencies for this package.
