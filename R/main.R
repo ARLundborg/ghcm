@@ -121,3 +121,31 @@ print.ghcm <- function(x, digits=getOption("digits"), ...) {
   }
   invisible(x)
 }
+
+ghcm_test_spline <- function(eps, xi, from, to, alpha=0.05) {
+  #' @export
+
+  eps_split <- split(eps, eps$.obs)
+  eps_splines <- lapply(eps_split, function(x) splines::interpSpline(x$.index, x$.value))
+  eps_prods <- inner_product_matrix_splines(eps_splines, from, to)
+
+  xi_split <- split(xi, xi$.obs)
+  xi_splines <- lapply(xi_split, function(x) splines::interpSpline(x$.index, x$.value))
+  xi_prods <- inner_product_matrix_splines(xi_splines, from, to)
+
+  inner_product_mat <- eps_prods*xi_prods
+
+  n <- dim(inner_product_mat)[1]
+
+  test_statistic <- 1/n * sum(inner_product_mat)
+  scaling_mat <- matrix(1/n, n, n)
+  cov_mat <- 1/(n - 1) * (inner_product_mat - scaling_mat %*%
+                            inner_product_mat - inner_product_mat %*% scaling_mat +
+                            scaling_mat %*% inner_product_mat %*% scaling_mat)
+  eig_vals <- pmax(eigen(cov_mat, only.values = TRUE, symmetric = TRUE)$values[-n],
+                   0)
+  p <- tryCatch(CompQuadForm::imhof(test_statistic, eig_vals,
+                                    epsrel = .Machine$double.eps, epsabs = .Machine$double.eps)$Qq,
+                warning = function(w) return(0))
+  ghcm_class_constructor(test_statistic, p, cov_mat, alpha)
+}
