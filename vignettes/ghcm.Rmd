@@ -39,42 +39,42 @@ library(ghcm)
 
 `ghcm` is an R package used to perform conditional independence tests for densely observed functional data.
 
-This vignette gives a brief overview of the usage of the `ghcm` package. We give a brief presentation of the idea behind the GHCM and the conditions under which the test is valid. Subsequently, we provide several examples of the usage of the `ghcm` package by analysing a simulated dataset.
+This vignette gives a brief overview of the usage of the `ghcm` package. We give a brief presentation of the idea behind the GHCM and the conditions under which the test is valid. Subsequently, we provide several examples of the usage of the `ghcm` package by analysing a simulated data set.
 
 # The Generalised Hilbertian Covariance Measure (GHCM)
 In this section we briefly describe the idea behind the GHCM. For the full technical details and theoretical results, see [@Lundborg2021].
 
-Let $X$, $Y$ and $Z$ be random variables of which we are given $n$ i.i.d. observations $(X_1, Y_1, Z_1), \dots, (X_n, Y_n, Z_n)$ and where $X$, $Y$ and $Z$ can be either scalar or functional. Existing methods, such as the GCM [@GCM] implemented in the `GeneralisedCovarianceMeasure` package [@GCM-package], can deal with most cases where both $X$ and $Y$ are scalar hence our primary interest is in the cases where at least one of $X$ and $Y$ are functional. For the moment, we think of all functional observations as being fully observed.
+Let $X$, $Y$ and $Z$ be random variables of which we are given $n$ i.i.d. observations $(X_1, Y_1, Z_1), \dots, (X_n, Y_n, Z_n)$ and where $X$, $Y$ and $Z$ can be either scalar or functional. Existing methods, such as the GCM [@GCM] implemented in the `GeneralisedCovarianceMeasure` package [@GCM-package], can deal with most cases where both $X$ and $Y$ are scalar hence our primary interest is in the cases where at least one of $X$ and $Y$ are functional.
 
-The GHCM estimates the expected conditional covariance of $X$ and $Y$ given $Z$, $\mathscr{K}$, and rejects the hypothesis $X \independent Y \cond Z$ if the Hilbert-Schmidt norm of $\mathscr{K}$ is large. To describe the algorithm, we utilise outer products $x \otimes y$, that can be thought of as a possibly infinite-dimensional generalisation of the matrix outer product $xy^T$ (for precise definitions, we refer to [@Lundborg2021]).
+The GHCM estimates the squared Hilbert-Schmidt norm of the expected conditional covariance of $X$ and $Y$ given $Z$, $\| \mathscr{K} \|_{\mathrm{HS}}^2$, and rejects the hypothesis $X \independent Y \cond Z$ if this quantity is too large. We denote by $\langle f, g \rangle$ the inner product between $f$ and $g$.  We compute the GHCM as follows.
 
 1. Regress $X$ on $Z$ and $Y$ on $Z$ yielding residuals $\hat{\varepsilon}$ and $\hat{\xi}$, respectively.
-2. Let $\mathscr{R}_i = \hat{\varepsilon}_i \otimes \hat{\xi}_i$ and compute the test statistic
+2. Compute the test statistic
 $$
-T = \left\| \frac{1}{\sqrt{n}} \sum_{i=1}^n \mathscr{R}_i \right\|_{HS}.
+T = \frac{1}{n} \sum_{i=1}^n \sum_{j=1}^n \langle \hat{\varepsilon}_i, \hat{\varepsilon}_j \rangle \langle \hat{\xi}_i, \hat{\xi}_j \rangle.
 $$
-3. Estimate the covariance of the limiting distribution 
+3. Compute the $n \times n$ matrix $\Gamma$ by setting 
 $$
-\hat{\mathscr{C}} = \frac{1}{n-1} \sum_{i=1}^n (\mathscr{R}_i - \bar{\mathscr{R}}) \otimes_{HS} (\mathscr{R}_i - \bar{\mathscr{R}}),
+\Gamma_{ij} := \langle \hat{\varepsilon}_i, \hat{\varepsilon}_j \rangle \langle \hat{\xi}_i, \hat{\xi}_j \rangle.
 $$
-where $\bar{\mathscr{R}} = n^{-1} \sum_{i=1}^n \mathscr{R}_i$.
-4. Compute the eigenvalues of $\hat{\mathscr{C}}$ $(\lambda_i)_{i=1}^\infty$ and produce a $p$-value by setting
+4. Compute the $d \leq n-1$ non-zero eigenvalues $(\lambda_k)_{k=1}^d$ of
 $$
-p = \mathbb{P}(Q > T),
+C := \frac{1}{n-1} (\Gamma - J \Gamma - \Gamma J + J \Gamma J),
 $$
-where
+where $J$ is the $n \times n$ matrix with all entries equal to $1/n$.
+5. Produce a $p$-value by setting
 $$
-Q = \sum_{i=1}^n \lambda_i W_i^2
+p = \mathbb{P}\left(\sum_{k=1}^d \lambda_k \zeta_k^2 > T\right),
 $$
-for an i.i.d. sequence of standard Gaussian random variables $(W_i)_{i=1}^\infty$.
+where $\zeta_1, \dots, \zeta_d$ are i.i.d. standard Gaussian random variables.
 
 Assuming that the regression methods perform sufficiently well, the GHCM has uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero in this case.
 
-In practice, we do not observe the functional data fully but rather at a discrete set of values. To deal with this, ...<!--  we utilise functional principal components analysis (FPCA) to express $\hat{\varepsilon}$ and $\hat{\xi}$ (in the case that these are functional) as vectors. -->
+The GHCM as implemented in this package assumes that the all the residuals of the $X$ on $Z$ regression are evaluated on the same grid and that residuals of the $Y$ on $Z$ regression are evaluated on the same grid. However, these two grids can be distinct. 
 
 
 # Example applications on a simulated dataset
-To give concrete examples of the usage of the package, we perform conditional independence tests on a simulated dataset consisting of both functional and scalar variables. The functional variables are observed on a common equidistant grid of $101$ points on $[0, 1]$. 
+To give concrete examples of the usage of the package, we perform conditional independence tests on a simulated data set consisting of both functional and scalar variables. The functional variables are observed on a common equidistant grid of $101$ points on $[0, 1]$. 
 
 ```{r}
 library(ghcm)
