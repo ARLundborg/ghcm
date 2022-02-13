@@ -23,9 +23,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.align="center",
-  dpi=150,
-  fig.width=7,
-  fig.height=5,
+  dpi=125,
+  fig.width=6,
+  fig.height=4,
   out.width="100%"
 )
 options(rmarkdown.html_vignette.check_title = FALSE) 
@@ -37,7 +37,7 @@ library(ghcm)
 
 # Introduction
 
-`ghcm` is an R package used to perform conditional independence tests for densely observed functional data.
+`ghcm` is an R package used to perform conditional independence tests for functional data.
 
 This vignette gives a brief overview of the usage of the `ghcm` package. We give a brief presentation of the idea behind the GHCM and the conditions under which the test is valid. Subsequently, we provide several examples of the usage of the `ghcm` package by analysing a simulated data set.
 
@@ -70,10 +70,13 @@ where $\zeta_1, \dots, \zeta_d$ are i.i.d. standard Gaussian random variables.
 
 Assuming that the regression methods perform sufficiently well, the GHCM has uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero in this case.
 
-The GHCM as implemented in this package assumes that the all the residuals of the $X$ on $Z$ regression are evaluated on the same grid and that residuals of the $Y$ on $Z$ regression are evaluated on the same grid. However, these two grids can be distinct. 
+The GHCM as implemented in the \code{ghcm_test} function assumes that the all the residuals of the $X$ on $Z$ regression are evaluated on the same grid and that residuals of the $Y$ on $Z$ regression are evaluated on the same grid. However, these two grids can be distinct. 
+
+In the \code{ghcm_test_splines} function this assumption is relaxed and the functions can be observed on arbitrary, irregular grids as long as each curve has 4 observations or more. 
 
 
 # Example applications on a simulated dataset
+## The GHCM with regular functional data 
 To give concrete examples of the usage of the package, we perform conditional independence tests on a simulated data set consisting of both functional and scalar variables. The functional variables are observed on a common equidistant grid of $101$ points on $[0, 1]$. 
 
 ```{r}
@@ -112,9 +115,9 @@ lines(grid, colMeans(ghcm_sim_data$W), col=2,
 title("W")
 ```
 
-In all of the upcoming examples we will use functions from the `refund` R-package [@refund] to perform regressions. We will not attempt to justify the validity of the regression models we use here as the upcoming tests are only included for illustrative purposes. In actual applications of the GHCM however, it is critical that the regression methods employed estimate the conditional expectations $\mathbb{E}(X \cond Z)$ and $\mathbb{E}(Y \cond Z)$ sufficiently well for the $p$-values to be valid. Any use of the GHCM should be prefaced by an analysis of the performance of the regression methods in use.
+In all of the upcoming examples we will use functions from the `refund` R-package [@refund] to perform regressions. The simulated data is obtained such that the regressions we perform are well-specified hence we do not have to worry about the performance of our regression methods. However, in actual applications of the GHCM, it is critical that the regression methods employed estimate the conditional expectations $\mathbb{E}(X \cond Z)$ and $\mathbb{E}(Y \cond Z)$ sufficiently well for the $p$-values to be valid. Any use of the GHCM should be prefaced by an analysis of the performance of the regression methods in use.
 
-## Testing independence of scalar variables given functional variables
+### Testing independence of scalar variables given functional variables
 We first test whether $Y_1$ and $Y_2$ are conditionally independent given the functional variables. This is relevant if, say, we're trying to predict $Y_1$ and we want to know whether including $Y_2$ as a predictor would be helpful. A naive correlation-based approach would suggest that $Y_2$ could be relevant since:
 ```{r}
 cor(ghcm_sim_data$Y_1, ghcm_sim_data$Y_2)
@@ -129,7 +132,7 @@ print(test)
 ```
 We get a $p$-value of 0.958. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone, hence the test_statistic is not reported. 
 
-## Testing independence of a scalar and functional variable given a functional variable
+### Testing independence of a scalar and functional variable given a functional variable
 We now test whether $Y_1 \independent X \cond Z$. This is relevant if we're interested in modelling $Y_1$ and want to determine whether $X$ should be included in a model that already includes $Z$. We can plot $X$ and $Z$ and color the curves based on the value of $Y_1$ as can be seen in Figures \@ref(fig:Z-Y-plot) and \@ref(fig:X-Y-plot) below. 
 
 ```{r Z-Y-plot, echo=FALSE, fig.cap="Plot of $Z$ with colors based on the value of $Y_1$."}
@@ -151,6 +154,8 @@ ggplot(tmp, aes(x=grid, y=value, group=id)) + geom_line(aes(color=Y_1)) +
 
 ```{r X-Y-plot, echo=FALSE, fig.cap="Plot of $X$ with colors based on the value of $Y_1$."}
 library(ggplot2)
+library(dplyr)
+library(tidyr)
 library(reshape2)
 
 X_df <- as.data.frame(ghcm_sim_data$X)
@@ -174,7 +179,7 @@ print(test)
 ```
 We get a $p$-value of 0.865.
 
-## Testing independence of functional variables given a functional variable
+### Testing independence of functional variables given a functional variable
 Finally, we test whether $X \independent W \cond Z$, which could be relevant in creating prediction models for $X$ or $W$ or in simply ascertaining the relationships between the functional variables. We run the test in the following code:
 ```{r X-W-Z-test}
 m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
@@ -183,5 +188,62 @@ test <- ghcm_test(resid(m_X), resid(m_W))
 print(test)
 ```
 We get a $p$-value of $0.6304$.
+
+## The GHCM with irregular functional data
+To illustrate the GHCM for irregular functional data, we load a version of the simulated dataset from before where we only observe a random subset of the points on each $X$ and $W$ curve. Although $Z$ is not irregular in the examples below, if the functional regression method employed is able to perform the regression with irregular predictors, the GHCM will still control the type I error rate.
+```{r}
+data(ghcm_sim_data_irregular)
+```
+`ghcm_sim_data_irregular`is a list containing $Y_1$, $Y_2$ and $Z$ as before.`ghcm_sim_data_irregular`also contains subsamples of $X$ and $W$ in a particular "melted" format:
+```{r}
+head(ghcm_sim_data_irregular$X)
+```
+The column \code{.obs} denotes which curve the observation comes from. The \code{.index} column denotes the function argument while the \code{.value} column denotes the function value. We can plot and compare the observations in the regular and irregular functional observations as seen in Figures \@ref(fig:plot-X-irregular) and \@ref(fig:plot-W-irregular).
+```{r plot-X-irregular, fig.cap="Plot of the first 5 observations of $X$ with the subsampled grid points marked by the larger triangles.", echo=FALSE}
+regular_X <- melt(ghcm_sim_data$X, varnames = c(".obs", ".index"), value.name = ".value")
+regular_X$.index <- grid[regular_X$.index]
+plot_df <- left_join(regular_X,ghcm_sim_data_irregular$X %>% mutate(subsampled=TRUE)) %>% replace_na(list(subsampled=FALSE))
+plot_df %>% subset(.obs <= 5) %>% ggplot(aes(x=.index, y=.value, color=as.factor(.obs))) + geom_point(aes(shape=subsampled, size=subsampled)) + geom_line(alpha=0.3) +
+  scale_size_manual(values=c(0.5, 2)) + guides(color="none", size="none", shape="none") +
+  scale_x_continuous(name=NULL) + scale_y_continuous(name=NULL) + theme_bw()
+```
+```{r plot-W-irregular, fig.cap="Plot of the first 5 observations of $W$ with the subsampled grid points marked by the larger triangles.", echo=FALSE}
+regular_W <- melt(ghcm_sim_data$W, varnames = c(".obs", ".index"), value.name = ".value")
+regular_W$.index <- grid[regular_W$.index]
+plot_df <- left_join(regular_W,ghcm_sim_data_irregular$W %>% mutate(subsampled=TRUE)) %>% replace_na(list(subsampled=FALSE))
+plot_df %>% subset(.obs <= 5) %>% ggplot(aes(x=.index, y=.value, color=as.factor(.obs))) + geom_point(aes(shape=subsampled, size=subsampled)) + geom_line(alpha=0.3) +
+  scale_size_manual(values=c(0.5, 2)) + guides(color="none", size="none", shape="none") +
+  scale_x_continuous(name=NULL) + scale_y_continuous(name=NULL) + theme_bw()
+```
+
+
+### Testing independence of a scalar and functional variable given a functional variable
+We now repeat the analysis from earlier on the subsampled data and test whether $Y_1 \independent X \cond Z$. We still use the `pffr` function from the `refund` package to do the function-on-function regression although the specification is different now that $X$ is no longer regularly observed. We run the test in the following code:
+```{r Y-X-Z-test-irregular}
+n <- nrow(ghcm_sim_data_irregular$Z)
+Z_df <- data.frame(.obs=1:n)
+Z_df$Z <- ghcm_sim_data_irregular$Z
+m_1 <- pfr(Y_1 ~ lf(Z), data = ghcm_sim_data_irregular)
+m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X, data=Z_df, chunk.size=31000)
+test <- ghcm_test_spline(resid(m_X), resid(m_1), X_limits=c(0, 1))
+print(test)
+```
+We get a $p$-value of $0.883$, which is very similar to the $p$-value of the regularly observed data of $0.865$.
+
+### Testing independence of functional variables given a functional variable
+Finally, we repeat the test whether $X \independent W \cond Z$ on the irregular data. We run the test in the following code:
+```{r X-W-Z-test-irregular}
+n <- nrow(ghcm_sim_data_irregular$Z)
+Z_df <- data.frame(.obs=1:n)
+Z_df$Z <- ghcm_sim_data_irregular$Z
+
+m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X, data=Z_df, chunk.size=31000)
+m_W <- pffr(W ~ ff(Z), ydata = ghcm_sim_data_irregular$W, data=Z_df, chunk.size=31000)
+test <- ghcm_test_spline(resid(m_X), resid(m_W), X_limits=c(0, 1), Y_limits=c(0, 1))
+print(test)
+```
+We get a $p$-value of $0.592$ which is again similar to the $p$-value of the regularly observed data of $0.6304$.
+
+
 
 # Bibliography

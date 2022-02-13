@@ -1,7 +1,7 @@
 Package: ghcm
 Type: Package
 Title: Functional Conditional Independence Testing with the GHCM
-Version: 2.0.0.900
+Version: 2.1.0
 Authors@R: c(person("Anton Rask", "Lundborg", email = "a.lundborg@statslab.cam.ac.uk",
   role = c("aut", "cre")),
   person("Rajen D.", "Shah", role = c("aut")),
@@ -33,7 +33,9 @@ Suggests:
     bookdown,
     GeneralisedCovarianceMeasure,
     ggplot2,
-    reshape2
+    reshape2,
+    dplyr,
+    tidyr
 URL: https://github.com/arlundborg/ghcm
 BugReports: https://github.com/arlundborg/ghcm/issues
 VignetteBuilder: knitr

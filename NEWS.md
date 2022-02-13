@@ -1,7 +1,14 @@
 Package: ghcm
 ==========================
 
-Version: 2.0.0 [2021-09-27]
+Version: 2.1.0 [February 2022]
+
+SIGNIFICANT CHANGES:
+
+  * A new function ghcm_test_spline that applies the GHCM when functions are observed on irregular grids. See the examples of the new function or the updated vignette for more details.
+
+
+Version: 2.0.0 [September 2021]
 
 SIGNIFICANT CHANGES:
 
