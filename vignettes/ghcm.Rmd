@@ -70,10 +70,7 @@ where $\zeta_1, \dots, \zeta_d$ are i.i.d. standard Gaussian random variables.
 
 Assuming that the regression methods perform sufficiently well, the GHCM has approximately uniformly distributed $p$-values when the null is true. It should be noted that there are situations where $X \notindependent Y \cond Z$ but the GHCM is unable to detect this dependence for any sample size, since $\mathscr{K}$ can be zero in this case.
 
-The GHCM as implemented in the \code{ghcm_test} function assumes that the all the residuals of the $X$ on $Z$ regression are evaluated on the same grid and that residuals of the $Y$ on $Z$ regression are evaluated on the same grid. However, these two grids can be distinct. 
-
-In the \code{ghcm_test_splines} function this assumption is relaxed and the functions can be observed on arbitrary, irregular grids, as long as each curve has 4 observations or more. 
-
+The GHCM as implemented in the \code{ghcm_test} function uses different methods to compute the inner products as required above depending on the format of the given residuals. For residuals from scalar or multivariate variables or functional variables observed on a constant, fixed grid, the inner products are computed as the usual Euclidean inner products and no further preprocessing is done. For residuals coming from irregularly observed functional variables or functions on a fixed grid with missing values, the inner products are computed as L2 inner products computed from spline interpolants of the curves. See the following sections for examples of both types of use.
 
 # Example applications on a simulated dataset
 ## The GHCM with regular functional data 
@@ -130,7 +127,7 @@ m_2 <- pfr(Y_2 ~ lf(X) + lf(Z) + lf(W), data=ghcm_sim_data)
 test <- ghcm_test(resid(m_1), resid(m_2))
 print(test)
 ```
-We obtain a $p$-value of 0.958. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone, hence the test_statistic is not reported. 
+We obtain a $p$-value of 0.958. It should be noted that since the asymptotic distribution of the test statistic depends on the underlying distribution, there is no way to know the $p$-value from just the test statistic alone, hence it is not reported. 
 
 ### Testing independence of a scalar and functional variable given a functional variable
 We now test whether $Y_1 \independent X \cond Z$. This is relevant if we're interested in modelling $Y_1$ and want to determine whether $X$ should be included in a model that already includes $Z$. We can plot $X$ and $Z$ and color the curves based on the value of $Y_1$ as can be seen in Figures \@ref(fig:Z-Y-plot) and \@ref(fig:X-Y-plot) below. 
@@ -225,7 +222,7 @@ Z_df <- data.frame(.obs=1:n)
 Z_df$Z <- ghcm_sim_data_irregular$Z
 m_1 <- pfr(Y_1 ~ lf(Z), data = ghcm_sim_data_irregular)
 m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X, data=Z_df, chunk.size=31000)
-test <- ghcm_test_spline(resid(m_X), resid(m_1), X_limits=c(0, 1))
+test <- ghcm_test(resid(m_X), resid(m_1), X_limits=c(0, 1))
 print(test)
 ```
 We obtain a $p$-value of $0.883$, which is very similar to the $p$-value of the regularly observed data of $0.865$.
@@ -239,7 +236,7 @@ Z_df$Z <- ghcm_sim_data_irregular$Z
 
 m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X, data=Z_df, chunk.size=31000)
 m_W <- pffr(W ~ ff(Z), ydata = ghcm_sim_data_irregular$W, data=Z_df, chunk.size=31000)
-test <- ghcm_test_spline(resid(m_X), resid(m_W), X_limits=c(0, 1), Y_limits=c(0, 1))
+test <- ghcm_test(resid(m_X), resid(m_W), X_limits=c(0, 1), Y_limits=c(0, 1))
 print(test)
 ```
 We obtain a $p$-value of $0.592$ which is again similar to the $p$-value of the regularly observed data of $0.6304$.

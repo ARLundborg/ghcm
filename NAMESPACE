@@ -2,6 +2,5 @@
 
 S3method(print,ghcm)
 export(ghcm_test)
-export(ghcm_test_spline)
 importFrom(Rcpp,sourceCpp)
 useDynLib(ghcm, .registration = TRUE)

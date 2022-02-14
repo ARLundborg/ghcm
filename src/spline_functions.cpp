@@ -38,7 +38,7 @@ IntegerVector find_interval(NumericVector v, NumericVector x) {
   return res;
 }
 
-double l2_inner_product_c(NumericVector knots_1, NumericMatrix coef_1, NumericVector knots_2, NumericMatrix coef_2, double from, double to) {
+double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVector knots_2, NumericMatrix coef_2, double from, double to) {
   NumericMatrix new_coef_1(coef_1.nrow() + 1, coef_1.ncol());
   NumericMatrix new_coef_2(coef_2.nrow() + 1, coef_2.ncol());
 
@@ -100,7 +100,7 @@ NumericMatrix inner_product_matrix_splines(List list_of_splines, double from, do
         NumericVector knots_j = spline_j["knots"];
         NumericMatrix coef_i = spline_i["coefficients"];
         NumericMatrix coef_j = spline_j["coefficients"];
-        mat(i, j) = l2_inner_product_c(knots_i, coef_i, knots_j, coef_j, from, to);
+        mat(i, j) = l2_inner_product(knots_i, coef_i, knots_j, coef_j, from, to);
       }
     }
   }
