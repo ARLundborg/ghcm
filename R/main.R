@@ -24,11 +24,11 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, alpha=0.05) {
   #' Conditional Independence Test using the GHCM
   #'
   #'
-  #' Testing X independent of Y given Z using the Generalised Hilbertian
-  #'  Covariance Measure. The function is applied to residuals from regressing X on Z
-  #'  and regressing Y on Z and its validity is contingent on the performance
-  #'  of the regression methods. This function assumes that, when X and Y are functional,
-  #'  that they are each observed on a fixed grid.
+  #' Tests whether X is independent of Y given Z using the Generalised Hilbertian
+  #'  Covariance Measure. The function is applied to vectors of residuals from regressing
+  #'  each of X and Y on Z respectively. Its validity is contingent on the performance
+  #'  of the regression methods. This function requires that when X and Y are functional,
+  #'  hey are each observed on fixed grids.
   #'
   #' @param resid_X_on_Z,resid_Y_on_Z Numeric vectors or matrices. Residuals
   #'  when regressing X (Y) on Z with a suitable regression method.
@@ -122,9 +122,9 @@ ghcm_test_spline <- function(resid_X_on_Z, resid_Y_on_Z, X_limits=NULL, Y_limits
   #' Conditional Independence Test using the GHCM
   #'
   #'
-  #' Testing X independent of Y given Z using the Generalised Hilbertian
-  #'  Covariance Measure. The function is applied to residuals from regressing X on Z
-  #'  and regressing Y on Z and its validity is contingent on the performance
+  #' Test whether X is independent of Y given Z using the Generalised Hilbertian
+  #'  Covariance Measure. The function is applied to vectors of residuals from regressing
+  #'  each of X and Y on Z respectively. Its validity is contingent on the performance
   #'  of the regression methods. ....
   #'
   #' @param resid_X_on_Z,resid_Y_on_Z Residuals from regressing X (Y) on Z with
