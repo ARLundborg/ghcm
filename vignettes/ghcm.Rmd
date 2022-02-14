@@ -72,7 +72,7 @@ Assuming that the regression methods perform sufficiently well, the GHCM has app
 
 The GHCM as implemented in the \code{ghcm_test} function assumes that the all the residuals of the $X$ on $Z$ regression are evaluated on the same grid and that residuals of the $Y$ on $Z$ regression are evaluated on the same grid. However, these two grids can be distinct. 
 
-In the \code{ghcm_test_splines} function this assumption is relaxed and the functions can be observed on arbitrary, irregular grids as long as each curve has 4 observations or more. 
+In the \code{ghcm_test_splines} function this assumption is relaxed and the functions can be observed on arbitrary, irregular grids, as long as each curve has 4 observations or more. 
 
 
 # Example applications on a simulated dataset
