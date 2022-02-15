@@ -35,12 +35,13 @@ IntegerVector find_interval(NumericVector v, NumericVector x) {
   return res;
 }
 
+
 double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVector knots_2, NumericMatrix coef_2, double from, double to) {
   NumericMatrix new_coef_1(coef_1.nrow() + 1, coef_1.ncol());
   NumericMatrix new_coef_2(coef_2.nrow() + 1, coef_2.ncol());
 
-  new_coef_1(0, _) = NumericVector::create(coef_1(0,0)-knots_1(0)*coef_1(0, 1), coef_1(0, 1),0,0);
-  new_coef_2(0, _) = NumericVector::create(coef_2(0,0)-knots_2(0)*coef_2(0, 1), coef_2(0, 1),0,0);
+  new_coef_1(0, _) = NumericVector::create(coef_1(0,0)-coef_1(0, 1)*(knots_1(0) - from), coef_1(0, 1),0,0);
+  new_coef_2(0, _) = NumericVector::create(coef_2(0,0)-coef_2(0, 1)*(knots_2(0) - from), coef_2(0, 1),0,0);
   for(int i=1; i<coef_1.nrow() + 1; i++) {
     new_coef_1(i, _) = coef_1(i-1, _);
   }
@@ -104,4 +105,3 @@ NumericMatrix inner_product_matrix_splines(List list_of_splines, double from, do
   }
   return mat;
 }
-
