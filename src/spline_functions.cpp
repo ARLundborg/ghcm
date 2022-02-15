@@ -1,14 +1,11 @@
 #include <Rcpp.h>
 using namespace Rcpp;
+#include <algorithm>
 
 double cubic_product_int(double knot1, double knot2, double to, NumericVector coef1, NumericVector coef2) {
   if(knot1 > knot2) {
-    NumericVector tmp_coef = clone(coef1);
-    double tmp_knot = knot1;
-    coef1 = clone(coef2);
-    coef2 = clone(tmp_coef);
-    knot1 = knot2;
-    knot2 = tmp_knot;
+    std::swap(knot1, knot2);
+    std::swap(coef1, coef2);
   }
   double diff1 = to - knot1;
   double diff2 = to - knot2;
@@ -85,6 +82,7 @@ double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVect
   return inner_prod;
 }
 
+
 // [[Rcpp::export]]
 NumericMatrix inner_product_matrix_splines(List list_of_splines, double from, double to) {
   int n = list_of_splines.size();
@@ -106,8 +104,4 @@ NumericMatrix inner_product_matrix_splines(List list_of_splines, double from, do
   }
   return mat;
 }
-
-
-
-
 
