@@ -2,6 +2,16 @@
 using namespace Rcpp;
 #include <algorithm>
 
+
+
+//' Letting knot1 < knot2, this function computes \int_knot2^to p1(x-knot1) p2(x-knot2) dx
+//' where p1 and p2 are third order polynomials with coefficients coef1 and coef2 respectively.
+//' If knot2 > knot1 the labels are switched.
+//'
+//' @param knot1,knot2 shift values of the polynomials.
+//' @param to upper limit of the integral.
+//' @param coef1,coef2 coefficients of the third order polynomials.
+//' @return the integral as described above.
 double cubic_product_int(double knot1, double knot2, double to,
                              double coef1_0, double coef1_1, double coef1_2, double coef1_3,
                              double coef2_0, double coef2_1, double coef2_2, double coef2_3) {
@@ -45,6 +55,15 @@ IntegerVector find_interval(NumericVector v, NumericVector x) {
   return res;
 }
 
+//' Computes the integral of the product of two natural cubic splines with knot
+//'  sequences knots_1 and knots_2 and coefficient matrices coef_1 and coef_2
+//'  from the splines::interpSpline function in R. The splines are assumed to live
+//'  in a function space on the interval [from, to].
+//'
+//' @param knots_1,knots_2 knot sequences for the natural cubic splines.
+//' @param coef_1,coef_2 coefficient matrices for the natural cubic splines.
+//' @param from,to limits of integration.
+//' @return the inner product of the splines.
 double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVector knots_2, NumericMatrix coef_2, double from, double to) {
 
   double inner_prod = 0;
@@ -113,7 +132,13 @@ double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVect
   return inner_prod;
 }
 
-
+//' Computes the matrix of L2 inner products of the splines given in list_of_splines
+//' as produced by splines::interpSpline. The splines are assumed to be
+//' functions on the interval [from, to].
+//'
+//' @param list_of_splines list of interpSpline objects.
+//' @param from,to limits of integration.
+//' @return matrix of inner products.
 // [[Rcpp::export]]
 NumericMatrix inner_product_matrix_splines(List list_of_splines, double from, double to) {
   int n = list_of_splines.size();
