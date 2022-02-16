@@ -46,15 +46,6 @@ double cubic_product_int(double knot1, double knot2, double to,
   return s;
 }
 
-
-IntegerVector find_interval(NumericVector v, NumericVector x) {
-  Rcpp::IntegerVector res(v.length());
-  for(int i=0; i < res.length(); ++i) {
-    res[i] = std::distance(x.begin(), std::upper_bound(x.begin(), x.end(), v[i]));
-  }
-  return res;
-}
-
 //' Computes the integral of the product of two natural cubic splines with knot
 //'  sequences knots_1 and knots_2 and coefficient matrices coef_1 and coef_2
 //'  from the splines::interpSpline function in R. The splines are assumed to live
