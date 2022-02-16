@@ -2,30 +2,40 @@
 using namespace Rcpp;
 #include <algorithm>
 
-double cubic_product_int(double knot1, double knot2, double to, NumericVector coef1, NumericVector coef2) {
+double cubic_product_int(double knot1, double knot2, double to,
+                             double coef1_0, double coef1_1, double coef1_2, double coef1_3,
+                             double coef2_0, double coef2_1, double coef2_2, double coef2_3) {
   if(knot1 > knot2) {
     std::swap(knot1, knot2);
-    std::swap(coef1, coef2);
+    std::swap(coef1_0, coef2_0);
+    std::swap(coef1_1, coef2_1);
+    std::swap(coef1_2, coef2_2);
+    std::swap(coef1_3, coef2_3);
   }
   double diff1 = to - knot1;
   double diff2 = to - knot2;
 
-  double diff1_2 = pow(diff1, 2);
-  double diff2_2 = pow(diff2, 2);
-  double diff2_3 = pow(diff2, 3);
-  double diff2_4 = pow(diff2, 4);
-  double diff2_5 = pow(diff2, 5);
-  double diff2_6 = pow(diff2, 6);
+  double diff1_2 = diff1*diff1;
+  double diff1_3 = diff1_2*diff1;
+  double diff2_2 = diff2*diff2;
+  double diff2_3 = diff2_2*diff2;
+  double diff2_4 = diff2_3*diff2;
+  double diff2_5 = diff2_4*diff2;
+  double diff2_6 = diff2_5*diff2;
+  double diff2_7 = diff2_6*diff2;
 
-  double s = (coef1[0]+coef1[1]*diff1+coef1[2]*diff1_2+coef1[3]*pow(diff1, 3))*
-    (coef2[0]*diff2+0.5*coef2[1]*diff2_2+1.0/3*coef2[2]*diff2_3+0.25*coef2[3]*diff2_4);
-  s -= 0.5*(coef1[1]+2*coef1[2]*diff1+3*coef1[3]*diff1_2)*
-    (coef2[0]*diff2_2+1.0/3*coef2[1]*diff2_3+1.0/6*coef2[2]*diff2_4+0.1*coef2[3]*diff2_5);
-  s += 1.0/6*(2*coef1[2]+6*coef1[3]*diff1)*
-    (coef2[0]*diff2_3+0.25*coef2[1]*diff2_4+0.1*coef2[2]*diff2_5+0.05*coef2[3]*diff2_6);
-  s -= 1.0/24*6*coef1[3]*(coef2[0]*diff2_4+0.2*coef2[1]*diff2_5+1.0/15*coef2[2]*diff2_6+1.0/35*coef2[3]*pow(diff2, 7));
+  double one_third = 1.0/3;
+
+  double s = (coef1_0+coef1_1*diff1+coef1_2*diff1_2+coef1_3*diff1_3)*
+    (coef2_0*diff2+0.5*coef2_1*diff2_2+one_third*coef2_2*diff2_3+0.25*coef2_3*diff2_4);
+  s -= 0.5*(coef1_1+2*coef1_2*diff1+3*coef1_3*diff1_2)*
+    (coef2_0*diff2_2+one_third*coef2_1*diff2_3+0.5*one_third*coef2_2*diff2_4+0.1*coef2_3*diff2_5);
+  s += 0.5*one_third*(2*coef1_2+6*coef1_3*diff1)*
+    (coef2_0*diff2_3+0.25*coef2_1*diff2_4+0.1*coef2_2*diff2_5+0.05*coef2_3*diff2_6);
+  s -= 0.25*coef1_3*(coef2_0*diff2_4+0.2*coef2_1*diff2_5+0.2*one_third*coef2_2*diff2_6+1.0/35*coef2_3*diff2_7);
   return s;
 }
+
 
 IntegerVector find_interval(NumericVector v, NumericVector x) {
   Rcpp::IntegerVector res(v.length());
@@ -35,49 +45,69 @@ IntegerVector find_interval(NumericVector v, NumericVector x) {
   return res;
 }
 
-
 double l2_inner_product(NumericVector knots_1, NumericMatrix coef_1, NumericVector knots_2, NumericMatrix coef_2, double from, double to) {
-  NumericMatrix new_coef_1(coef_1.nrow() + 1, coef_1.ncol());
-  NumericMatrix new_coef_2(coef_2.nrow() + 1, coef_2.ncol());
-
-  new_coef_1(0, _) = NumericVector::create(coef_1(0,0)-coef_1(0, 1)*(knots_1(0) - from), coef_1(0, 1),0,0);
-  new_coef_2(0, _) = NumericVector::create(coef_2(0,0)-coef_2(0, 1)*(knots_2(0) - from), coef_2(0, 1),0,0);
-  for(int i=1; i<coef_1.nrow() + 1; i++) {
-    new_coef_1(i, _) = coef_1(i-1, _);
-  }
-  for(int i=1; i<coef_2.nrow() + 1; i++) {
-    new_coef_2(i, _) = coef_2(i-1, _);
-  }
-
-  coef_1 = new_coef_1;
-  coef_2 = new_coef_2;
-
-  NumericVector new_knots_1(knots_1.length()+2);
-  NumericVector new_knots_2(knots_2.length()+2);
-
-  new_knots_1[0] = from;
-  new_knots_2[0] = from;
-  new_knots_1[Range(1, knots_1.length())] = knots_1;
-  new_knots_2[Range(1, knots_2.length())] = knots_2;
-  new_knots_1[knots_1.length()+1] = to;
-  new_knots_2[knots_2.length()+1] = to;
-
-  knots_1 = new_knots_1;
-  knots_2 = new_knots_2;
-
-  NumericVector knots(knots_1.length()+knots_2.length());
-  knots[Range(0, knots_1.length()-1)] = knots_1;
-  knots[Range(knots_1.length(), knots_1.length()+knots_2.length()-1)] = knots_2;
-  knots = sort_unique(knots);
-
-  IntegerVector which_knot_1 = find_interval(knots, knots_1)-1;
-  IntegerVector which_knot_2 = find_interval(knots, knots_2)-1;
-
 
   double inner_prod = 0;
-  for(int i = 0; i < knots.length()-1; i++) {
-    inner_prod += cubic_product_int(knots_1[which_knot_1[i]], knots_2[which_knot_2[i]],
-                    knots[i+1], coef_1(which_knot_1[i], _), coef_2(which_knot_2[i], _));
+  int i=-1;
+  int j=-1;
+  double knot1 = from;
+  double knot2 = from;
+  double next_knot1 = knots_1[0];
+  double next_knot2 = knots_2[0];
+  double upper_lim = from;
+  double coef1_0, coef1_1, coef1_2, coef1_3, coef2_0, coef2_1, coef2_2, coef2_3;
+  while(upper_lim < to) {
+    if(next_knot1 < next_knot2) {
+      upper_lim = next_knot1;
+    } else {
+      upper_lim = next_knot2;
+    }
+
+    if (i > -1) {
+      coef1_0 = coef_1(i, 0);
+      coef1_1 = coef_1(i, 1);
+      coef1_2 = coef_1(i, 2);
+      coef1_3 = coef_1(i, 3);
+    } else {
+      coef1_0 = coef_1(0, 0) - coef_1(0, 1)*(knots_1[0] - from);
+      coef1_1 = coef_1(0, 1);
+      coef1_2 = 0;
+      coef1_3 = 0;
+    }
+
+    if (j > -1) {
+      coef2_0 = coef_2(j, 0);
+      coef2_1 = coef_2(j, 1);
+      coef2_2 = coef_2(j, 2);
+      coef2_3 = coef_2(j, 3);
+    } else {
+      coef2_0 = coef_2(0, 0) - coef_2(0, 1)*(knots_2[0] - from);
+      coef2_1 = coef_2(0, 1);
+      coef2_2 = 0;
+      coef2_3 = 0;
+    }
+
+    inner_prod += cubic_product_int(knot1, knot2, upper_lim,
+                                    coef1_0, coef1_1, coef1_2, coef1_3,
+                                    coef2_0, coef2_1, coef2_2, coef2_3);
+
+    if(next_knot1 < next_knot2) {
+      i++;
+      knot1 = next_knot1;
+      if (i < knots_1.length()-1) {
+        next_knot1 = knots_1[i+1];
+      } else {
+        next_knot1 = to;
+      }
+    } else {
+      j++;
+      knot2 = next_knot2;
+      if (j < knots_2.length()-1) {
+        next_knot2 = knots_2[j+1];
+      } else {
+        next_knot2 = to;
+      }
+    }
   }
 
   return inner_prod;
