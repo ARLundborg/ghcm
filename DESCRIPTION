@@ -1,8 +1,8 @@
 Package: ghcm
 Type: Package
 Title: Functional Conditional Independence Testing with the GHCM
-Version: 3.0.0
-Authors@R: c(person("Anton Rask", "Lundborg", email = "a.lundborg@statslab.cam.ac.uk",
+Version: 3.0.1
+Authors@R: c(person("Anton Rask", "Lundborg", email = "arl@math.ku.dk",
   role = c("aut", "cre")),
   person("Rajen D.", "Shah", role = c("aut")),
   person("Jonas", "Peters", role = c("aut")))
