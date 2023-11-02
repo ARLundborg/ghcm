@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ARLundborg/ghcm/workflows/R-CMD-check/badge.svg)](https://github.com/ARLundborg/ghcm/actions)
+[![R-CMD-check](https://github.com/ARLundborg/ghcm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ARLundborg/ghcm/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ghcm is a package to perform conditional independence tests on functional data.
