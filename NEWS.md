@@ -1,6 +1,12 @@
 Package: ghcm
 ==========================
 
+Version: 3.0.1 [November 2023]
+
+SIGNIFICANT CHANGES:
+
+  * Updated maintainer email address, paper reference and fixed examples.
+
 Version: 3.0.0 [February 2022]
 
 SIGNIFICANT CHANGES:

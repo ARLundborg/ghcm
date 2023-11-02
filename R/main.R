@@ -62,53 +62,56 @@ ghcm_test <- function(resid_X_on_Z, resid_Y_on_Z, X_limits=NULL, Y_limits=NULL, 
   #' @references
   #'  Please cite the following paper: Anton Rask Lundborg, Rajen D. Shah and
   #'  Jonas Peters: "Conditional Independence Testing in Hilbert Spaces with
-  #'  Applications to Functional Data Analysis" https://arxiv.org/abs/2101.07108
+  #'  Applications to Functional Data Analysis" Journal of the Royal Statistical
+  #'  Society: Series B (Statistical Methodology) 2022 \doi{10.1111/rssb.12544}.
   #'
   #' @examples
-  #' library(refund)
-  #' set.seed(1)
-  #' data(ghcm_sim_data)
-  #' grid <- seq(0, 1, length.out = 101)
+  #' if (require(refund)) {
+  #'   set.seed(1)
+  #'   data(ghcm_sim_data)
+  #'   grid <- seq(0, 1, length.out = 101)
   #'
   #' # Test independence of two scalars given a functional variable
   #'
-  #' m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
-  #' m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
-  #' ghcm_test(resid(m_1), resid(m_2))
+  #'   m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data)
+  #'   m_2 <- pfr(Y_2 ~ lf(Z), data=ghcm_sim_data)
+  #'   ghcm_test(resid(m_1), resid(m_2))
   #'
   #' # Test independence of a regularly observed functional variable and a
   #' # scalar variable given a functional variable
-  #' \donttest{
-  #' m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_1))
-  #'}
+  #'   \donttest{
+  #'     m_X <- pffr(X ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
+  #'     ghcm_test(resid(m_X), resid(m_1))
+  #'   }
   #' # Test independence of two regularly observed functional variables given
   #' # a functional variable
-  #' \donttest{
-  #' m_W <- pffr(W ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_W))
-  #'}
+  #'   \donttest{
+  #'      m_W <- pffr(W ~ ff(Z), data=ghcm_sim_data, chunk.size=31000)
+  #'     ghcm_test(resid(m_X), resid(m_W))
+  #'   }
   #'
   #'
-  #' data(ghcm_sim_data_irregular)
-  #' n <- length(ghcm_sim_data_irregular$Y_1)
-  #' Z_df <- data.frame(.obs=1:n)
-  #' Z_df$Z <- ghcm_sim_data_irregular$Z
+  #'   data(ghcm_sim_data_irregular)
+  #'   n <- length(ghcm_sim_data_irregular$Y_1)
+  #'   Z_df <- data.frame(.obs=1:n)
+  #'   Z_df$Z <- ghcm_sim_data_irregular$Z
   #' # Test independence of an irregularly observed functional variable and a
   #' # scalar variable given a functional variable
-  #' \donttest{
-  #' m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data_irregular)
-  #' m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X,
-  #'   data=Z_df, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_1), X_limits=c(0, 1))
-  #'}
+  #'   \donttest{
+  #'     m_1 <- pfr(Y_1 ~ lf(Z), data=ghcm_sim_data_irregular)
+  #'     m_X <- pffr(X ~ ff(Z), ydata = ghcm_sim_data_irregular$X,
+  #'     data=Z_df, chunk.size=31000)
+  #'     ghcm_test(resid(m_X), resid(m_1), X_limits=c(0, 1))
+  #'  }
   #' # Test independence of two irregularly observed functional variables given
   #' # a functional variable
-  #' \donttest{
-  #' m_W <- pffr(W ~ ff(Z), ydata = ghcm_sim_data_irregular$W,
-  #'   data=Z_df, chunk.size=31000)
-  #' ghcm_test(resid(m_X), resid(m_W), X_limits=c(0, 1), Y_limits=c(0, 1))
-  #'}
+  #'   \donttest{
+  #'     m_W <- pffr(W ~ ff(Z), ydata = ghcm_sim_data_irregular$W,
+  #'     data=Z_df, chunk.size=31000)
+  #'     ghcm_test(resid(m_X), resid(m_W), X_limits=c(0, 1), Y_limits=c(0, 1))
+  #'  }
+  #' }
+  #'
   #' @export
 
 

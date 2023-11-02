@@ -11,27 +11,25 @@ Description: A statistical hypothesis test for conditional independence.
     the covariance of the residuals is vanishing. It can be applied to both
     discretely-observed functional data and multivariate data. 
     Details of the method can be found in Anton Rask Lundborg, Rajen D. Shah and Jonas
-    Peters (2021) <arXiv:2101.07108>.
+    Peters (2022) <doi:10.1111/rssb.12544>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    graphics,
-    MASS,
-    refund,
-    stats,
-    utils,
     CompQuadForm,
     Rcpp,
     splines
 Depends: R (>= 4.0.0)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
+    graphics,
+    stats,
+    utils,
+    refund,
     testthat,
     knitr,
     rmarkdown,
     bookdown,
-    GeneralisedCovarianceMeasure,
     ggplot2,
     reshape2,
     dplyr,

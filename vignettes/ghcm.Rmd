@@ -12,6 +12,7 @@ vignette: >
   %\VignetteIndexEntry{ghcm}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{graphics, stats, refund, ggplot2, reshape2, dplyr, tidyr, utils}
 ---
 \newcommand{\independent}{\mbox{${}\perp\mkern-11mu\perp{}$}}
 \newcommand{\notindependent}{\mbox{${}\not\!\perp\mkern-11mu\perp{}$}}
